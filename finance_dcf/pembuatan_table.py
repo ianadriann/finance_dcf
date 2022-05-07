@@ -16,6 +16,7 @@ year_new = year_new.year
 year_old = year_new - 1
 
 
+#tabel bS
 
 def cash_and_equivalents_new(ticker_bs):
     cash_and_equivalents = ticker_bs
