@@ -245,12 +245,12 @@ financing_cash_flow_new = financing_cash_flow_new(ticker_cf)
 financing_cash_flow_old = financing_cash_flow_old(ticker_cf)
 cash_and_equivalents_beginning_new = cash_and_equivalents_beginning_new(ticker_bs)
 cash_and_equivalents_beginning_old = cash_and_equivalents_beginning_old(ticker_bs)
-fx_rate_effect_on_cash_new = 0
-fx_rate_effect_on_cash_old = 0
-cash_and_equivalents_changes_new = 0
-cash_and_equivalents_changes_old = 0
+#fx_rate_effect_on_cash_new = 0
+#fx_rate_effect_on_cash_old = 0
 cash_and_equivalents_ending_new = cash_and_equivalents_ending_new(ticker_bs)
 cash_and_equivalents_ending_old = cash_and_equivalents_ending_old(ticker_bs)
+cash_and_equivalents_changes_new = cash_and_equivalents_ending_new - cash_and_equivalents_beginning_new
+cash_and_equivalents_changes_old = cash_and_equivalents_ending_old - cash_and_equivalents_beginning_old
 
 
 
@@ -270,13 +270,14 @@ print(tabel_bs_old)
 '''
 
 print("=======data terbaru=======")
-tabel_cf_new = pd.DataFrame([[operating_cash_flow_new, investing_cash_flow_new, fixed_asset_expenditure_new, financing_cash_flow_new, cash_and_equivalents_beginning_new, fx_rate_effect_on_cash_new, cash_and_equivalents_changes_new, cash_and_equivalents_ending_new, ticker_kode, year_new]],
+tabel_cf_new = pd.DataFrame([[operating_cash_flow_new, investing_cash_flow_new, fixed_asset_expenditure_new, financing_cash_flow_new, cash_and_equivalents_beginning_new, cash_and_equivalents_changes_new, cash_and_equivalents_ending_new, ticker_kode, year_new]],
             #index=[' '], 
-            columns=['operating_cash_flow', 'investing_cash_flow', 'fixed_asset_expenditure', 'financing_cash_flow', 'cash_and_equivalents_beginning', 'fx_rate_effect_on_cash', 'cash_and_equivalents_changes', 'cash_and_equivalents_ending', 'ticker_kode', 'year'])
+            columns=['operating_cash_flow', 'investing_cash_flow', 'fixed_asset_expenditure', 'financing_cash_flow', 'cash_and_equivalents_beginning', 'cash_and_equivalents_changes', 'cash_and_equivalents_ending', 'ticker_kode', 'year'])
 print(tabel_cf_new)
 
 print("=======data lama=======")
-tabel_cf_old = pd.DataFrame([[operating_cash_flow_old, investing_cash_flow_old, fixed_asset_expenditure_old, financing_cash_flow_old, cash_and_equivalents_beginning_old, fx_rate_effect_on_cash_old, cash_and_equivalents_changes_old, cash_and_equivalents_ending_old, ticker_kode, year_old]],
+tabel_cf_old = pd.DataFrame([[operating_cash_flow_old, investing_cash_flow_old, fixed_asset_expenditure_old, financing_cash_flow_old, cash_and_equivalents_beginning_old, cash_and_equivalents_changes_old, cash_and_equivalents_ending_old, ticker_kode, year_old]],
             #index=[' '], 
-            columns=['operating_cash_flow', 'investing_cash_flow', 'fixed_asset_expenditure', 'financing_cash_flow', 'cash_and_equivalents_beginning', 'fx_rate_effect_on_cash', 'cash_and_equivalents_changes', 'cash_and_equivalents_ending', 'ticker_kode', 'year'])
+            columns=['operating_cash_flow', 'investing_cash_flow', 'fixed_asset_expenditure', 'financing_cash_flow', 'cash_and_equivalents_beginning', 'cash_and_equivalents_changes', 'cash_and_equivalents_ending', 'ticker_kode', 'year'])
 print(tabel_cf_old)
+
