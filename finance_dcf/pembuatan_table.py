@@ -1,19 +1,30 @@
 from calendar import c
+from numpy import append
 import pandas as pd
+import pandas
 import yfinance as yf
 import datetime
+import os
+import requests
+import string
+from bs4 import BeautifulSoup
+from functools import partial, reduce
+import plotly.graph_objects as go
 
-ticker_kode = "ABBA.JK"
+
+
+ticker_kode = "AAPL"
 ticker = yf.Ticker(ticker_kode)
 #year = datetime.datetime.now()
 #year = year.year
 
 ticker_bs = ticker.balance_sheet
 ticker_cf = ticker.cashflow
-print(ticker_cf)
+#print(ticker_cf)
 year_new = ticker_bs.columns[0]
 year_new = year_new.year
 year_old = year_new - 1
+
 
 
 #tabel bS
@@ -254,30 +265,57 @@ cash_and_equivalents_changes_old = cash_and_equivalents_ending_old - cash_and_eq
 
 
 
-'''
-print("=======data terbaru=======")
+
+#print("=======data terbaru=======")
 tabel_bs_new = pd.DataFrame([[cash_and_equivalents_new, 0, 0, total_current_assets_new, fixed_assets_new, total_non_current_assets_new, total_assets_new, total_current_liabilities_new, total_non_current_liabilities_new, total_equity_new, ticker_kode, year_new]],
             #index=[' '], 
             columns=['cash_and_equivalents', 'account_receivables_third_party', 'account_receivables_related_party', 'total_current_assets', 'fixed_assets', 'total_non_current_assets', 'total_assets', 'total_current_liabilities', 'total_non_current_liabilities', 'total_equity', 'ticker_kode', 'year'])
-print(tabel_bs_new)
+#print(tabel_bs_new)
 
-print("=======data satu tahun sebelumnya=======")
+#print("=======data satu tahun sebelumnya=======")
 
 tabel_bs_old = pd.DataFrame([[cash_and_equivalents_old, 0, 0, total_current_assets_old, fixed_assets_old, total_non_current_assets_old, total_assets_old, total_current_liabilities_old, total_non_current_liabilities_old, total_equity_old, ticker_kode, year_old]],
             #index=[' '], 
             columns=['cash_and_equivalents', 'account_receivables_third_party', 'account_receivables_related_party', 'total_current_assets', 'fixed_assets', 'total_non_current_assets', 'total_assets', 'total_current_liabilities', 'total_non_current_liabilities', 'total_equity', 'ticker_kode', 'year'])
-print(tabel_bs_old)
-'''
+#print(tabel_bs_old)
 
-print("=======data terbaru=======")
+
+#print("=======data terbaru=======")
 tabel_cf_new = pd.DataFrame([[operating_cash_flow_new, investing_cash_flow_new, fixed_asset_expenditure_new, financing_cash_flow_new, cash_and_equivalents_beginning_new, cash_and_equivalents_changes_new, cash_and_equivalents_ending_new, ticker_kode, year_new]],
             #index=[' '], 
             columns=['operating_cash_flow', 'investing_cash_flow', 'fixed_asset_expenditure', 'financing_cash_flow', 'cash_and_equivalents_beginning', 'cash_and_equivalents_changes', 'cash_and_equivalents_ending', 'ticker_kode', 'year'])
-print(tabel_cf_new)
+#print(tabel_cf_new)
 
-print("=======data lama=======")
+#print("=======data lama=======")
 tabel_cf_old = pd.DataFrame([[operating_cash_flow_old, investing_cash_flow_old, fixed_asset_expenditure_old, financing_cash_flow_old, cash_and_equivalents_beginning_old, cash_and_equivalents_changes_old, cash_and_equivalents_ending_old, ticker_kode, year_old]],
             #index=[' '], 
             columns=['operating_cash_flow', 'investing_cash_flow', 'fixed_asset_expenditure', 'financing_cash_flow', 'cash_and_equivalents_beginning', 'cash_and_equivalents_changes', 'cash_and_equivalents_ending', 'ticker_kode', 'year'])
-print(tabel_cf_old)
+#print(tabel_cf_old)
 
+def get_single_dataframe(year):
+    if year == year_new:
+        return tabel_cf_new
+    if year == year_old:
+        return tabel_cf_old
+    else:
+        print('laporan tidak ditemukan')
+    return
+
+
+def get_multiple_dataframes(year, subtrahend):
+    dfs = []
+    for y in range(year - subtrahend, year + 1):
+        dfs.append(get_single_dataframe(year=y))
+        
+    return pandas.concat(dfs, sort = False).reset_index(drop = True)
+
+#a = get_multiple_dataframes(2021, 1)
+#print(a)
+
+
+aa = tabel_bs_new.append(tabel_cf_new)
+print(aa)
+
+bb = reduce.partial(pandas.merge, on = 'ticker_code')
+print(bb)
+# tambahkan tabel_bs_new dan old pada function get_single_dataframe(year)
