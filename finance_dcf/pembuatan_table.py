@@ -403,6 +403,11 @@ def pretax_income_new(ticker_is):
     pretax_income = pretax_income.loc['Income Tax Expense']
     pretax_income = pretax_income.iloc[ :1]
     pretax_income = pretax_income.values
+    if pretax_income < 0:
+        pretax_income = pretax_income
+    else:
+        pretax_income > 0
+        pretax_income = -pretax_income
     return pretax_income
 
 def pretax_income_old(ticker_is):
@@ -411,6 +416,11 @@ def pretax_income_old(ticker_is):
     pretax_income = pretax_income.loc['Income Tax Expense']
     pretax_income = pretax_income.iloc[1:2]
     pretax_income = pretax_income.values
+    if pretax_income < 0:
+        pretax_income = pretax_income
+    else:
+        pretax_income > 0
+        pretax_income = -pretax_income
     return pretax_income
 
 #variable balence sheet
