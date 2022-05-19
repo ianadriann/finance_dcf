@@ -26,64 +26,26 @@ start = script_data.find("context")-2
 # slice the json string
 json_data = json.loads(script_data[start:-12])
 
-'''
 # income statement
 annual_is = json_data['context']['dispatcher']['stores']['QuoteSummaryStore']['incomeStatementHistory']['incomeStatementHistory']
 quarterly_is = json_data['context']['dispatcher']['stores']['QuoteSummaryStore']['incomeStatementHistoryQuarterly']['incomeStatementHistory']
-#print(quarterly_is[3])
 
-annual_bs = json_data['context']['dispatcher']['stores']['QuoteSummaryStore']['balanceSheetHistory']['balanceSheetStatements']
-
+# cash flow statement
 annual_cf = json_data['context']['dispatcher']['stores']['QuoteSummaryStore']['cashflowStatementHistory']['cashflowStatements']
 quarterly_cf = json_data['context']['dispatcher']['stores']['QuoteSummaryStore']['cashflowStatementHistoryQuarterly']['cashflowStatements']
 
-print(quarterly_cf[3])
-
-BS (Anual)
-BS (Q)
-
-IS (anual)
-IS (Q)
-
-CF (A)
-CF (Q)
-
-'''
-
-is_full = json_data['context']['dispatcher']['stores']['QuoteTimeSeriesStore']['timeSeries']
-asme = is_full['annualSellingAndMarketingExpense']
-#print(asme)
-
-is_full2 = json_data['context']['dispatcher']['stores']['QuoteTimeSeriesStore']['timeSeries']['annualSellingAndMarketingExpense']
+# balance sheet
+annual_bs = json_data['context']['dispatcher']['stores']['QuoteSummaryStore']['balanceSheetHistory']['balanceSheetStatements']
+quarterly_bs = json_data['context']['dispatcher']['stores']['QuoteSummaryStore']['balanceSheetHistoryQuarterly']['balanceSheetStatements']
 
 
+angka = 100
 
-annual_is_stmts = []
-
-# consolidate annual
-for s in is_full2:
-    statement = {}
-    for key, val in s.items():
-        try:
-            statement[key] = val['raw']
-        except TypeError:
-            continue
-        except KeyError:
-            continue
-    annual_is_stmts.append(statement)
-
-
-
-if annual_is_stmts == []:
-    annual_is_stmts = 0
-    #print(annual_is_stmts)
-else:
-    #print("oke lanjut")
-    print(annual_is_stmts[0]['reportedValue'])
-    print(annual_is_stmts[1]['reportedValue'])
-    print(annual_is_stmts[2]['reportedValue'])
-    print(annual_is_stmts[3]['reportedValue'])
-
-
-
+if angka < 0:
+    angka = angka
+    print("nilai mines", angka)
+else: 
+    angka > 0
+    angka = -angka
+    print("angka awal plus", angka)
 

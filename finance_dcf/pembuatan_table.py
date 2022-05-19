@@ -1,25 +1,68 @@
 from calendar import c
+from codecs import ignore_errors
+from sys import set_coroutine_origin_tracking_depth
+from tokenize import Ignore
+from turtle import clear
 from numpy import append
 import pandas as pd
 import pandas
 import yfinance as yf
 import datetime
 import os
-import requests
 import string
 from bs4 import BeautifulSoup
 from functools import partial, reduce
 import plotly.graph_objects as go
 
+#=======
+import re
+import json
+import csv
+from io import StringIO
+import requests
+
+########## ============= SCRAPPING WEB =======================############
+# url templates
+url_stats = 'https://finance.yahoo.com/quote/{}/key-statistics?p={}'
+url_profile = 'https://finance.yahoo.com/quote/{}/profile?p={}'
+url_financials = 'https://finance.yahoo.com/quote/{}/financials?p={}'
+
+ticker_kode = "AALI.JK"
+headers = { 'User-Agent' : 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.2 Safari/605.1.15' }
+response = requests.get(url_financials.format(ticker_kode, ticker_kode),headers={'user-agent':'my-app'})
+
+soup = BeautifulSoup(response.text, 'html.parser')
+pattern = re.compile(r'\s--\sData\s--\s')
+script_data = soup.find('script', text=pattern).contents[0]
+
+# find the starting position of the json string
+start = script_data.find("context")-2
+
+# slice the json string
+json_data = json.loads(script_data[start:-12])
+
+Selling_Marketing_Expense = json_data['context']['dispatcher']['stores']['QuoteTimeSeriesStore']['timeSeries']['annualSellingAndMarketingExpense']
+
+depreciation_expenses = json_data['context']['dispatcher']['stores']['QuoteSummaryStore']['incomeStatementHistory']['incomeStatementHistory']
+#depreciation_expenses_new = depreciation_expenses[0]['incomeBeforeTax']
+#depreciation_expenses_old = depreciation_expenses[1]['incomeBeforeTax']
 
 
-ticker_kode = "AAPL"
+
+
+
+#======================akhir========================
+
+ticker_kode = ticker_kode
 ticker = yf.Ticker(ticker_kode)
 #year = datetime.datetime.now()
 #year = year.year
 
 ticker_bs = ticker.balance_sheet
 ticker_cf = ticker.cashflow
+ticker_is = ticker.financials
+print(ticker_is)
+
 #print(ticker_cf)
 year_new = ticker_bs.columns[0]
 year_new = year_new.year
@@ -225,6 +268,151 @@ def cash_and_equivalents_ending_old(ticker_bs):
     cash_and_equivalents_ending = cash_and_equivalents_ending.values
     return cash_and_equivalents_ending
 
+#fungtion income statement
+def revenues_new(ticker_is):
+    revenues = ticker_is
+    revenues = pd.DataFrame(revenues)
+    revenues = revenues.loc['Total Revenue']
+    revenues = revenues.iloc[ :1]
+    revenues = revenues.values
+    return revenues
+
+def revenues_old(ticker_is):
+    revenues = ticker_is
+    revenues = pd.DataFrame(revenues)
+    revenues = revenues.loc['Total Revenue']
+    revenues = revenues.iloc[1:2]
+    revenues = revenues.values
+    return revenues
+
+def cost_of_goods_sold_new(ticker_is):
+    cost_of_goods_sold = ticker_is
+    cost_of_goods_sold = pd.DataFrame(cost_of_goods_sold)
+    cost_of_goods_sold = cost_of_goods_sold.loc['Cost Of Revenue']
+    cost_of_goods_sold = cost_of_goods_sold.iloc[ :1]
+    cost_of_goods_sold = cost_of_goods_sold.values
+    return cost_of_goods_sold
+
+def cost_of_goods_sold_old(ticker_is):
+    cost_of_goods_sold = ticker_is
+    cost_of_goods_sold = pd.DataFrame(cost_of_goods_sold)
+    cost_of_goods_sold = cost_of_goods_sold.loc['Cost Of Revenue']
+    cost_of_goods_sold = cost_of_goods_sold.iloc[1:2]
+    cost_of_goods_sold = cost_of_goods_sold.values
+    return cost_of_goods_sold
+
+def gross_income_new(ticker_is):
+    gross_income = ticker_is
+    gross_income = pd.DataFrame(gross_income)
+    gross_income = gross_income.loc['Gross Profit']
+    gross_income = gross_income.iloc[ :1]
+    gross_income = gross_income.values
+    return gross_income
+
+def gross_income_old(ticker_is):
+    gross_income = ticker_is
+    gross_income = pd.DataFrame(gross_income)
+    gross_income = gross_income.loc['Gross Profit']
+    gross_income = gross_income.iloc[1:2]
+    gross_income = gross_income.values
+    return gross_income
+
+def sales_expenses_new(Selling_Marketing_Expense):
+    Selling_Marketing_Expense_new = []
+    # consolidate annual
+    for s in Selling_Marketing_Expense:
+        statement = {}
+        for key, val in s.items():
+            try:
+                statement[key] = val['raw']
+            except TypeError:
+                continue
+            except KeyError:
+                continue
+        Selling_Marketing_Expense_new.append(statement)
+    if Selling_Marketing_Expense_new == []:
+        Selling_Marketing_Expense_new = 0
+    else:
+        Selling_Marketing_Expense_new = Selling_Marketing_Expense_new[3]['reportedValue']
+    return Selling_Marketing_Expense_new
+
+def sales_expenses_old(Selling_Marketing_Expense):
+    Selling_Marketing_Expense_old = []
+    # consolidate annual
+    for s in Selling_Marketing_Expense:
+        statement = {}
+        for key, val in s.items():
+            try:
+                statement[key] = val['raw']
+            except TypeError:
+                continue
+            except KeyError:
+                continue
+        Selling_Marketing_Expense_old.append(statement)
+    if Selling_Marketing_Expense_old == []:
+        Selling_Marketing_Expense_old = 0
+    else:
+        Selling_Marketing_Expense_old = Selling_Marketing_Expense_old[2]['reportedValue']
+    return Selling_Marketing_Expense_old
+
+def depreciation_expenses_new(depreciation_expenses):
+    depreciation_expenses_new = []
+    # consolidate annual
+    for s in depreciation_expenses:
+        statement = {}
+        for key, val in s.items():
+            try:
+                statement[key] = val['raw']
+            except TypeError:
+                continue
+            except KeyError:
+                continue
+        depreciation_expenses_new.append(statement)
+    get_depreciation_expenses_new = depreciation_expenses_new[0]['incomeBeforeTax']
+    if get_depreciation_expenses_new == []:
+        get_depreciation_expenses_new = 0
+    else:
+        get_depreciation_expenses_new = depreciation_expenses_new[0]['incomeBeforeTax']
+    return get_depreciation_expenses_new
+
+
+def depreciation_expenses_old(depreciation_expenses):
+    depreciation_expenses_old = []
+    # consolidate annual
+    for s in depreciation_expenses:
+        statement = {}
+        for key, val in s.items():
+            try:
+                statement[key] = val['raw']
+            except TypeError:
+                continue
+            except KeyError:
+                continue
+        depreciation_expenses_old.append(statement)
+    get_depreciation_expenses_old = depreciation_expenses_old[1]['incomeBeforeTax']
+    if get_depreciation_expenses_old == []:
+        get_depreciation_expenses_old = 0
+    else:
+        get_depreciation_expenses_old = depreciation_expenses_old[1]['incomeBeforeTax']
+    return get_depreciation_expenses_old
+
+
+def pretax_income_new(ticker_is):
+    pretax_income = ticker_is
+    pretax_income = pd.DataFrame(pretax_income)
+    pretax_income = pretax_income.loc['Income Tax Expense']
+    pretax_income = pretax_income.iloc[ :1]
+    pretax_income = pretax_income.values
+    return pretax_income
+
+def pretax_income_old(ticker_is):
+    pretax_income = ticker_is
+    pretax_income = pd.DataFrame(pretax_income)
+    pretax_income = pretax_income.loc['Income Tax Expense']
+    pretax_income = pretax_income.iloc[1:2]
+    pretax_income = pretax_income.values
+    return pretax_income
+
 #variable balence sheet
 cash_and_equivalents_new = cash_and_equivalents_new(ticker_bs)
 cash_and_equivalents_old = cash_and_equivalents_old(ticker_bs)
@@ -263,7 +451,21 @@ cash_and_equivalents_ending_old = cash_and_equivalents_ending_old(ticker_bs)
 cash_and_equivalents_changes_new = cash_and_equivalents_ending_new - cash_and_equivalents_beginning_new
 cash_and_equivalents_changes_old = cash_and_equivalents_ending_old - cash_and_equivalents_beginning_old
 
-
+#variable incomestatement
+revenues_new = revenues_new(ticker_is)
+revenues_old = revenues_old(ticker_is)
+cost_of_goods_sold_new = cost_of_goods_sold_new(ticker_is)
+cost_of_goods_sold_old = cost_of_goods_sold_old(ticker_is)
+gross_income_new = gross_income_new(ticker_is)
+gross_income_old = gross_income_old(ticker_is)
+sales_expenses_new = [sales_expenses_new(Selling_Marketing_Expense)]
+sales_expenses_old = [sales_expenses_old(Selling_Marketing_Expense)]
+sales_and_admin_expenses_new = [0]
+sales_and_admin_expenses_old = [0]
+depreciation_expenses_new = [depreciation_expenses_new(depreciation_expenses)]
+depreciation_expenses_old = [depreciation_expenses_old(depreciation_expenses)]
+pretax_income_new = pretax_income_new(ticker_is)
+pretax_income_old = pretax_income_old(ticker_is)
 
 
 #print("=======data terbaru=======")
@@ -292,30 +494,8 @@ tabel_cf_old = pd.DataFrame([[operating_cash_flow_old, investing_cash_flow_old, 
             columns=['operating_cash_flow', 'investing_cash_flow', 'fixed_asset_expenditure', 'financing_cash_flow', 'cash_and_equivalents_beginning', 'cash_and_equivalents_changes', 'cash_and_equivalents_ending', 'ticker_kode', 'year'])
 #print(tabel_cf_old)
 
-def get_single_dataframe(year):
-    if year == year_new:
-        return tabel_cf_new
-    if year == year_old:
-        return tabel_cf_old
-    else:
-        print('laporan tidak ditemukan')
-    return
+tabel_is_new = pd.DataFrame([[revenues_new, cost_of_goods_sold_new, gross_income_new, sales_expenses_new, sales_and_admin_expenses_new, depreciation_expenses_new, pretax_income_new]],
+            #index=[' '], 
+            columns=['revenues', 'cost_of_goods_sold', 'gross_income', 'sales_expenses', 'sales_and_admin_expenses', 'depreciation_expenses', 'pretax_income'])
+print(tabel_is_new)
 
-
-def get_multiple_dataframes(year, subtrahend):
-    dfs = []
-    for y in range(year - subtrahend, year + 1):
-        dfs.append(get_single_dataframe(year=y))
-        
-    return pandas.concat(dfs, sort = False).reset_index(drop = True)
-
-#a = get_multiple_dataframes(2021, 1)
-#print(a)
-
-
-aa = tabel_bs_new.append(tabel_cf_new)
-print(aa)
-
-bb = reduce.partial(pandas.merge, on = 'ticker_code')
-print(bb)
-# tambahkan tabel_bs_new dan old pada function get_single_dataframe(year)
