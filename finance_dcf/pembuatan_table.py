@@ -27,7 +27,7 @@ url_stats = 'https://finance.yahoo.com/quote/{}/key-statistics?p={}'
 url_profile = 'https://finance.yahoo.com/quote/{}/profile?p={}'
 url_financials = 'https://finance.yahoo.com/quote/{}/financials?p={}'
 
-ticker_kode = "AALI.JK"
+ticker_kode = "APIC.JK"
 headers = { 'User-Agent' : 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.2 Safari/605.1.15' }
 response = requests.get(url_financials.format(ticker_kode, ticker_kode),headers={'user-agent':'my-app'})
 
@@ -44,9 +44,16 @@ json_data = json.loads(script_data[start:-12])
 Selling_Marketing_Expense = json_data['context']['dispatcher']['stores']['QuoteTimeSeriesStore']['timeSeries']['annualSellingAndMarketingExpense']
 
 depreciation_expenses = json_data['context']['dispatcher']['stores']['QuoteSummaryStore']['incomeStatementHistory']['incomeStatementHistory']
-#depreciation_expenses_new = depreciation_expenses[0]['incomeBeforeTax']
-#depreciation_expenses_old = depreciation_expenses[1]['incomeBeforeTax']
 
+tax_expenses = json_data['context']['dispatcher']['stores']['QuoteTimeSeriesStore']['timeSeries']['annualNetIncomeContinuousOperations']
+
+after_tax_income_operational = json_data['context']['dispatcher']['stores']['QuoteTimeSeriesStore']['timeSeries']['annualNetIncomeDiscontinuousOperations']
+
+comprehensive_income = json_data['context']['dispatcher']['stores']['QuoteTimeSeriesStore']['timeSeries']['annualBasicEPS'] #EPS
+
+
+
+#print(after_tax_income_operational)
 
 
 
@@ -355,7 +362,7 @@ def sales_expenses_old(Selling_Marketing_Expense):
         Selling_Marketing_Expense_old = Selling_Marketing_Expense_old[2]['reportedValue']
     return Selling_Marketing_Expense_old
 
-def depreciation_expenses_new(depreciation_expenses):
+def depreciation_expenses_new(depreciation_expenses): 
     depreciation_expenses_new = []
     # consolidate annual
     for s in depreciation_expenses:
@@ -374,6 +381,7 @@ def depreciation_expenses_new(depreciation_expenses):
     else:
         get_depreciation_expenses_new = depreciation_expenses_new[0]['incomeBeforeTax']
     return get_depreciation_expenses_new
+
 
 
 def depreciation_expenses_old(depreciation_expenses):
@@ -422,6 +430,97 @@ def pretax_income_old(ticker_is):
         pretax_income > 0
         pretax_income = -pretax_income
     return pretax_income
+
+
+def after_taxes_income_op_new(after_tax_income_operational):
+    if after_tax_income_operational == []:
+        after_tax_income_operational = [0, 0, 0, 0]
+        after_taxes_income_op_new = after_tax_income_operational[3]
+    elif after_tax_income_operational == 0:
+        after_tax_income_operational = [0, 0, 0, 0]
+        after_taxes_income_op_new = after_tax_income_operational[3]
+    elif after_tax_income_operational == None:
+        after_tax_income_operational = [0, 0, 0, 0]
+        after_taxes_income_op_new = after_tax_income_operational[3]
+    else:
+        after_tax_income_operational
+        if after_tax_income_operational[3] == None:
+            after_taxes_income_op_new = 0
+        else:
+            after_taxes_income_op_new = after_tax_income_operational[3]['reportedValue']['raw']
+    return after_taxes_income_op_new
+
+def after_taxes_income_op_old(after_tax_income_operational):
+    if after_tax_income_operational == []:
+        after_tax_income_operational = [0, 0, 0, 0]
+        after_taxes_income_op_new = after_tax_income_operational[3]
+    elif after_tax_income_operational == 0:
+        after_tax_income_operational = [0, 0, 0, 0]
+        after_taxes_income_op_new = after_tax_income_operational[3]
+    elif after_tax_income_operational == None:
+        after_tax_income_operational = [0, 0, 0, 0]
+        after_taxes_income_op_new = after_tax_income_operational[3]
+    else:
+        after_tax_income_operational
+        if after_tax_income_operational[2] == None:
+            after_taxes_income_op_new = 0
+        else:
+            after_taxes_income_op_new = after_tax_income_operational[2]['reportedValue']['raw']
+    return after_taxes_income_op_new
+
+def after_tax_income_nonoperational_new(ticker_is):
+    after_tax_income_nonoperational = ticker_is
+    after_tax_income_nonoperational = pd.DataFrame(after_tax_income_nonoperational)
+    after_tax_income_nonoperational = after_tax_income_nonoperational.loc['Net Income From Continuing Ops']
+    after_tax_income_nonoperational = after_tax_income_nonoperational.iloc[ :1]
+    after_tax_income_nonoperational = after_tax_income_nonoperational.values
+    return after_tax_income_nonoperational
+
+def after_tax_income_nonoperational_old(ticker_is):
+    after_tax_income_nonoperational = ticker_is
+    after_tax_income_nonoperational = pd.DataFrame(after_tax_income_nonoperational)
+    after_tax_income_nonoperational = after_tax_income_nonoperational.loc['Net Income From Continuing Ops']
+    after_tax_income_nonoperational = after_tax_income_nonoperational.iloc[1:2]
+    after_tax_income_nonoperational = after_tax_income_nonoperational.values
+    return after_tax_income_nonoperational
+
+def comprehensive_income_EPS_new(comprehensive_income):
+    if comprehensive_income == []:
+        comprehensive_income = [0, 0, 0, 0]
+        comprehensive_income_EPS_new = comprehensive_income[3]
+    elif comprehensive_income == 0:
+        comprehensive_income = [0, 0, 0, 0]
+        comprehensive_income_EPS_new = comprehensive_income[3]
+    elif comprehensive_income == None:
+        comprehensive_income = [0, 0, 0, 0]
+        comprehensive_income_EPS_new = comprehensive_income[3]
+    else:
+        comprehensive_income
+        if comprehensive_income[3] == None:
+            comprehensive_income_EPS_new = 0
+        else:
+            comprehensive_income_EPS_new = comprehensive_income[3]['reportedValue']['raw']
+    return comprehensive_income_EPS_new
+
+def comprehensive_income_EPS_old(comprehensive_income):
+    if comprehensive_income == []:
+        comprehensive_income = [0, 0, 0, 0]
+        comprehensive_income_EPS_old = comprehensive_income[2]
+    elif comprehensive_income == 0:
+        comprehensive_income = [0, 0, 0, 0]
+        comprehensive_income_EPS_old = comprehensive_income[2]
+    elif comprehensive_income == None:
+        comprehensive_income = [0, 0, 0, 0]
+        comprehensive_income_EPS_old = comprehensive_income[2]
+    else:
+        comprehensive_income
+        if comprehensive_income[2] == None:
+            comprehensive_income_EPS_old = 0
+        else:
+            comprehensive_income_EPS_old = comprehensive_income[2]['reportedValue']['raw']
+    return comprehensive_income_EPS_old
+
+
 
 #variable balence sheet
 cash_and_equivalents_new = cash_and_equivalents_new(ticker_bs)
@@ -476,7 +575,15 @@ depreciation_expenses_new = [depreciation_expenses_new(depreciation_expenses)]
 depreciation_expenses_old = [depreciation_expenses_old(depreciation_expenses)]
 pretax_income_new = pretax_income_new(ticker_is)
 pretax_income_old = pretax_income_old(ticker_is)
-
+taxes_expenses_new = after_tax_income_nonoperational_new(ticker_is)
+taxes_expenses_old = after_tax_income_nonoperational_old(ticker_is)
+after_taxes_income_op_new = [after_taxes_income_op_new(after_tax_income_operational)]
+after_taxes_income_op_old = [after_taxes_income_op_old(after_tax_income_operational)]
+after_tax_income_nonoperational_new = after_tax_income_nonoperational_new(ticker_is)
+after_tax_income_nonoperational_old = after_tax_income_nonoperational_old(ticker_is)
+after_tax_income_new = [0]
+after_tax_income_old = [0]
+comprehensive_income_EPS_new = [comprehensive_income_EPS_new(comprehensive_income)]
 
 #print("=======data terbaru=======")
 tabel_bs_new = pd.DataFrame([[cash_and_equivalents_new, 0, 0, total_current_assets_new, fixed_assets_new, total_non_current_assets_new, total_assets_new, total_current_liabilities_new, total_non_current_liabilities_new, total_equity_new, ticker_kode, year_new]],
@@ -504,8 +611,21 @@ tabel_cf_old = pd.DataFrame([[operating_cash_flow_old, investing_cash_flow_old, 
             columns=['operating_cash_flow', 'investing_cash_flow', 'fixed_asset_expenditure', 'financing_cash_flow', 'cash_and_equivalents_beginning', 'cash_and_equivalents_changes', 'cash_and_equivalents_ending', 'ticker_kode', 'year'])
 #print(tabel_cf_old)
 
-tabel_is_new = pd.DataFrame([[revenues_new, cost_of_goods_sold_new, gross_income_new, sales_expenses_new, sales_and_admin_expenses_new, depreciation_expenses_new, pretax_income_new]],
+tabel_is_new = pd.DataFrame([[revenues_new, cost_of_goods_sold_new, gross_income_new, sales_expenses_new, sales_and_admin_expenses_new, depreciation_expenses_new, pretax_income_new, taxes_expenses_new, after_taxes_income_op_new, after_tax_income_nonoperational_new, after_tax_income_new, comprehensive_income_EPS_new]],
             #index=[' '], 
-            columns=['revenues', 'cost_of_goods_sold', 'gross_income', 'sales_expenses', 'sales_and_admin_expenses', 'depreciation_expenses', 'pretax_income'])
+            columns=['revenues', 'cost_of_goods_sold', 'gross_income', 'sales_expenses', 'sales_and_admin_expenses', 'depreciation_expenses', 'pretax_income', 'tax_expenses', 'after_tax_income_operational', 'after_tax_income_nonoperational', 'after_tax_income_new', 'comprehensive_income'])
 print(tabel_is_new)
 
+
+'''
+ERORR
+
+
+Traceback (most recent call last):
+  File "/Users/birulaut/Downloads/Document/finance_dcf/finance_dcf/pembuatan_table.py", line 570, in <module>
+    sales_expenses_new = [sales_expenses_new(Selling_Marketing_Expense)]
+  File "/Users/birulaut/Downloads/Document/finance_dcf/finance_dcf/pembuatan_table.py", line 332, in sales_expenses_new
+    for key, val in s.items():
+AttributeError: 'NoneType' object has no attribute 'items'
+birulaut@BL-MacBook-Pro finance_dcf % 
+'''
