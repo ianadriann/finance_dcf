@@ -87,4 +87,5 @@ else:
 
 #coba mau repo
 #uji coba read css
+#https://github.com/ledwindra/discounted-cash-flow/blob/master/input/income-statement-2018.csv
 
