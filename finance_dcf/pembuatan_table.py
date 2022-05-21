@@ -2,7 +2,7 @@ from calendar import c
 from codecs import ignore_errors
 from sys import set_coroutine_origin_tracking_depth
 from tokenize import Ignore
-from turtle import clear
+#from turtle import clear
 from numpy import append
 import pandas as pd
 import pandas
@@ -28,7 +28,8 @@ url_profile = 'https://finance.yahoo.com/quote/{}/profile?p={}'
 url_financials = 'https://finance.yahoo.com/quote/{}/financials?p={}'
 
 ticker_kode = "APIC.JK"
-headers = { 'User-Agent' : 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.2 Safari/605.1.15' }
+#headers = { 'User-Agent' : 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.2 Safari/605.1.15' }
+headers = { 'User-Agent' : 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.64 Safari/537.36' }
 response = requests.get(url_financials.format(ticker_kode, ticker_kode),headers={'user-agent':'my-app'})
 
 soup = BeautifulSoup(response.text, 'html.parser')
@@ -325,42 +326,40 @@ def gross_income_old(ticker_is):
     return gross_income
 
 def sales_expenses_new(Selling_Marketing_Expense):
-    Selling_Marketing_Expense_new = []
-    # consolidate annual
-    for s in Selling_Marketing_Expense:
-        statement = {}
-        for key, val in s.items():
-            try:
-                statement[key] = val['raw']
-            except TypeError:
-                continue
-            except KeyError:
-                continue
-        Selling_Marketing_Expense_new.append(statement)
-    if Selling_Marketing_Expense_new == []:
-        Selling_Marketing_Expense_new = 0
+    if Selling_Marketing_Expense == []:
+        Selling_Marketing_Expense = [0, 0, 0, 0]
+        sales_expenses_new = Selling_Marketing_Expense[3]
+    elif Selling_Marketing_Expense == 0:
+        Selling_Marketing_Expense = [0, 0, 0, 0]
+        sales_expenses_new = Selling_Marketing_Expense[3]
+    elif Selling_Marketing_Expense == None:
+        Selling_Marketing_Expense = [0, 0, 0, 0]
+        sales_expenses_new = Selling_Marketing_Expense[3]
     else:
-        Selling_Marketing_Expense_new = Selling_Marketing_Expense_new[3]['reportedValue']
-    return Selling_Marketing_Expense_new
+        Selling_Marketing_Expense
+        if Selling_Marketing_Expense[3] == None:
+            Selling_Marketing_Expense = 0
+        else:
+            sales_expenses_new = Selling_Marketing_Expense[3]['reportedValue']['raw']
+    return sales_expenses_new
 
 def sales_expenses_old(Selling_Marketing_Expense):
-    Selling_Marketing_Expense_old = []
-    # consolidate annual
-    for s in Selling_Marketing_Expense:
-        statement = {}
-        for key, val in s.items():
-            try:
-                statement[key] = val['raw']
-            except TypeError:
-                continue
-            except KeyError:
-                continue
-        Selling_Marketing_Expense_old.append(statement)
-    if Selling_Marketing_Expense_old == []:
-        Selling_Marketing_Expense_old = 0
+    if Selling_Marketing_Expense == []:
+        Selling_Marketing_Expense = [0, 0, 0, 0]
+        sales_expenses_old = Selling_Marketing_Expense[2]
+    elif Selling_Marketing_Expense == 0:
+        Selling_Marketing_Expense = [0, 0, 0, 0]
+        sales_expenses_old = Selling_Marketing_Expense[2]
+    elif Selling_Marketing_Expense == None:
+        Selling_Marketing_Expense = [0, 0, 0, 0]
+        sales_expenses_old = Selling_Marketing_Expense[2]
     else:
-        Selling_Marketing_Expense_old = Selling_Marketing_Expense_old[2]['reportedValue']
-    return Selling_Marketing_Expense_old
+        Selling_Marketing_Expense
+        if Selling_Marketing_Expense[2] == None:
+            Selling_Marketing_Expense = 0
+        else:
+            sales_expenses_old = Selling_Marketing_Expense[2]['reportedValue']['raw']
+    return sales_expenses_old
 
 def depreciation_expenses_new(depreciation_expenses): 
     depreciation_expenses_new = []
