@@ -616,15 +616,3 @@ tabel_is_new = pd.DataFrame([[revenues_new, cost_of_goods_sold_new, gross_income
 print(tabel_is_new)
 
 
-'''
-ERORR
-
-
-Traceback (most recent call last):
-  File "/Users/birulaut/Downloads/Document/finance_dcf/finance_dcf/pembuatan_table.py", line 570, in <module>
-    sales_expenses_new = [sales_expenses_new(Selling_Marketing_Expense)]
-  File "/Users/birulaut/Downloads/Document/finance_dcf/finance_dcf/pembuatan_table.py", line 332, in sales_expenses_new
-    for key, val in s.items():
-AttributeError: 'NoneType' object has no attribute 'items'
-birulaut@BL-MacBook-Pro finance_dcf % 
-'''
