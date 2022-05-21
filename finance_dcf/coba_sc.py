@@ -39,13 +39,15 @@ annual_bs = json_data['context']['dispatcher']['stores']['QuoteSummaryStore']['b
 quarterly_bs = json_data['context']['dispatcher']['stores']['QuoteSummaryStore']['balanceSheetHistoryQuarterly']['balanceSheetStatements']
 
 
-angka = 100
+tax_expenses = json_data['context']['dispatcher']['stores']['QuoteTimeSeriesStore']['timeSeries']['annualBasicEPS']
 
-if angka < 0:
-    angka = angka
-    print("nilai mines", angka)
-else: 
-    angka > 0
-    angka = -angka
-    print("angka awal plus", angka)
+aa0 = tax_expenses[0]['reportedValue']['raw']
+aa1 = tax_expenses[1]['reportedValue']['raw']
+aa2 = tax_expenses[2]['reportedValue']['raw']
+aa3 = tax_expenses[3]['reportedValue']['raw']
 
+
+print(aa0,
+aa0,
+aa2,
+aa3)
