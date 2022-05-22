@@ -628,14 +628,14 @@ income_per_share_old = income_per_share_old(income_per_share)
 tabel_bs_new = pd.DataFrame([[cash_and_equivalents_new, account_receivables_third_party_new, account_receivables_related_party_new, total_current_assets_new, fixed_assets_new, total_non_current_assets_new, total_assets_new, total_current_liabilities_new, total_non_current_liabilities_new, total_equity_new, ticker_kode, year_new]],
             #index=[' '], 
             columns=['cash_and_equivalents', 'account_receivables_third_party', 'account_receivables_related_party', 'total_current_assets', 'fixed_assets', 'total_non_current_assets', 'total_assets', 'total_current_liabilities', 'total_non_current_liabilities', 'total_equity', 'ticker_kode', 'year'])
-print(tabel_bs_new)
+#print(tabel_bs_new)
 
 #print("=======data satu tahun sebelumnya=======")
 
 tabel_bs_old = pd.DataFrame([[cash_and_equivalents_old, account_receivables_third_party_old, account_receivables_related_party_old, total_current_assets_old, fixed_assets_old, total_non_current_assets_old, total_assets_old, total_current_liabilities_old, total_non_current_liabilities_old, total_equity_old, ticker_kode, year_old]],
             #index=[' '], 
             columns=['cash_and_equivalents', 'account_receivables_third_party', 'account_receivables_related_party', 'total_current_assets', 'fixed_assets', 'total_non_current_assets', 'total_assets', 'total_current_liabilities', 'total_non_current_liabilities', 'total_equity', 'ticker_kode', 'year'])
-print(tabel_bs_old)
+#print(tabel_bs_old)
 
 
 #print("=======data terbaru=======")
@@ -661,4 +661,23 @@ tabel_is_old = pd.DataFrame([[revenues_old, cost_of_goods_sold_old, gross_income
 #print(tabel_is_old)
 
 
-account_receivables_third_party_old, account_receivables_related_party_old
+'''
+erorr
+tabel_is
+fx_rate_effect_on_cash, 
+fx_rate_effect_on_cash
+'''
+
+'''
+tabel_cf_new1 = pd.DataFrame([[operating_cash_flow_new, investing_cash_flow_new, fixed_asset_expenditure_new, financing_cash_flow_new, cash_and_equivalents_beginning_new, cash_and_equivalents_changes_new]],
+            #index=[' '], 
+            columns=['operating_cash_flow', 'investing_cash_flow', 'fixed_asset_expenditure', 'financing_cash_flow', 'cash_and_equivalents_beginning', 'cash_and_equivalents_changes'])
+print(tabel_cf_new1)
+
+print("=="*50)
+
+tabel_cf_new2 = pd.DataFrame([[cash_and_equivalents_ending_new, ticker_kode, year_new]],
+            #index=[' '], 
+            columns=['cash_and_equivalents_ending', 'ticker_kode', 'year'])
+print(tabel_cf_new2)
+'''

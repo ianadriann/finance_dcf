@@ -42,9 +42,4 @@ quarterly_bs = json_data['context']['dispatcher']['stores']['QuoteSummaryStore']
 
 
 
-
-aaa = income_per_share_new(income_per_share)
-
-print(aaa)
-
  
