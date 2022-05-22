@@ -11,7 +11,7 @@ url_profile = 'https://finance.yahoo.com/quote/{}/profile?p={}'
 url_financials = 'https://finance.yahoo.com/quote/{}/financials?p={}'
 
 # the stock I want to scrape
-stock = 'AALI.JK'
+stock = 'APIC.JK'
 
 headers = { 'User-Agent' : 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.2 Safari/605.1.15' }
 response = requests.get(url_financials.format(stock, stock),headers={'user-agent':'my-app'})
@@ -39,15 +39,12 @@ annual_bs = json_data['context']['dispatcher']['stores']['QuoteSummaryStore']['b
 quarterly_bs = json_data['context']['dispatcher']['stores']['QuoteSummaryStore']['balanceSheetHistoryQuarterly']['balanceSheetStatements']
 
 
-tax_expenses = json_data['context']['dispatcher']['stores']['QuoteTimeSeriesStore']['timeSeries']['annualBasicEPS']
-
-aa0 = tax_expenses[0]['reportedValue']['raw']
-aa1 = tax_expenses[1]['reportedValue']['raw']
-aa2 = tax_expenses[2]['reportedValue']['raw']
-aa3 = tax_expenses[3]['reportedValue']['raw']
 
 
-print(aa0,
-aa0,
-aa2,
-aa3)
+
+
+aaa = income_per_share_new(income_per_share)
+
+print(aaa)
+
+ 
