@@ -26,32 +26,39 @@ import requests
 url_stats = 'https://finance.yahoo.com/quote/{}/key-statistics?p={}'
 url_profile = 'https://finance.yahoo.com/quote/{}/profile?p={}'
 url_financials = 'https://finance.yahoo.com/quote/{}/financials?p={}'
+url_cashflow = 'https://finance.yahoo.com/quote/{}/cash-flow?p={}'
 
-ticker_kode = "APIC.JK"
+ticker_kode = "ATIC.JK"
 #headers = { 'User-Agent' : 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.2 Safari/605.1.15' }
 headers = { 'User-Agent' : 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.64 Safari/537.36' }
 response = requests.get(url_financials.format(ticker_kode, ticker_kode),headers={'user-agent':'my-app'})
+response_cachflow = requests.get(url_cashflow.format(ticker_kode, ticker_kode),headers={'user-agent':'my-app'})
+
 
 soup = BeautifulSoup(response.text, 'html.parser')
 pattern = re.compile(r'\s--\sData\s--\s')
 script_data = soup.find('script', text=pattern).contents[0]
 
+soup_cashflow = BeautifulSoup(response_cachflow.text, 'html.parser')
+pattern_cashflow = re.compile(r'\s--\sData\s--\s')
+script_data_cashflow = soup_cashflow.find('script', text=pattern_cashflow).contents[0]
+
 # find the starting position of the json string
 start = script_data.find("context")-2
+start_cashflow = script_data_cashflow.find("context")-2
 
 # slice the json string
 json_data = json.loads(script_data[start:-12])
+json_data_cashflow = json.loads(script_data_cashflow[start:-12])
 
 Selling_Marketing_Expense = json_data['context']['dispatcher']['stores']['QuoteTimeSeriesStore']['timeSeries']['annualSellingAndMarketingExpense']
-
 depreciation_expenses = json_data['context']['dispatcher']['stores']['QuoteSummaryStore']['incomeStatementHistory']['incomeStatementHistory']
-
 tax_expenses = json_data['context']['dispatcher']['stores']['QuoteTimeSeriesStore']['timeSeries']['annualNetIncomeContinuousOperations']
-
 after_tax_income_operational = json_data['context']['dispatcher']['stores']['QuoteTimeSeriesStore']['timeSeries']['annualNetIncomeDiscontinuousOperations']
-
 comprehensive_income = json_data['context']['dispatcher']['stores']['QuoteTimeSeriesStore']['timeSeries']['annualBasicEPS'] #EPS
 income_per_share = json_data['context']['dispatcher']['stores']['QuoteTimeSeriesStore']['timeSeries']['annualReconciledDepreciation']
+
+fx_rate_effect_on_cash = json_data_cashflow['context']['dispatcher']['stores']['QuoteTimeSeriesStore']['timeSeries']['annualEffectOfExchangeRateChanges']
 
 
 #print(after_tax_income_operational)
@@ -326,6 +333,10 @@ def gross_income_old(ticker_is):
     return gross_income
 
 def sales_expenses_new(Selling_Marketing_Expense):
+    Selling_Marketing_Expense_tabel = pd.DataFrame(Selling_Marketing_Expense)
+    Selling_Marketing_Expense_tabel = Selling_Marketing_Expense_tabel['reportedValue']
+    Selling_Marketing_Expense_tabel = len(Selling_Marketing_Expense_tabel)
+    Selling_Marketing_Expense_tabel = Selling_Marketing_Expense_tabel -1
     if Selling_Marketing_Expense == []:
         Selling_Marketing_Expense = [0, 0, 0, 0]
         sales_expenses_new = Selling_Marketing_Expense[3]
@@ -337,13 +348,17 @@ def sales_expenses_new(Selling_Marketing_Expense):
         sales_expenses_new = Selling_Marketing_Expense[3]
     else:
         Selling_Marketing_Expense
-        if Selling_Marketing_Expense[3] == None:
+        if Selling_Marketing_Expense[Selling_Marketing_Expense_tabel] == None:
             Selling_Marketing_Expense = 0
         else:
-            sales_expenses_new = Selling_Marketing_Expense[3]['reportedValue']['raw']
+            sales_expenses_new = Selling_Marketing_Expense[Selling_Marketing_Expense_tabel]['reportedValue']['raw']
     return sales_expenses_new
 
 def sales_expenses_old(Selling_Marketing_Expense):
+    Selling_Marketing_Expense_tabel = pd.DataFrame(Selling_Marketing_Expense)
+    Selling_Marketing_Expense_tabel = Selling_Marketing_Expense_tabel['reportedValue']
+    Selling_Marketing_Expense_tabel = len(Selling_Marketing_Expense_tabel)
+    Selling_Marketing_Expense_tabel = Selling_Marketing_Expense_tabel -2
     if Selling_Marketing_Expense == []:
         Selling_Marketing_Expense = [0, 0, 0, 0]
         sales_expenses_old = Selling_Marketing_Expense[2]
@@ -355,10 +370,10 @@ def sales_expenses_old(Selling_Marketing_Expense):
         sales_expenses_old = Selling_Marketing_Expense[2]
     else:
         Selling_Marketing_Expense
-        if Selling_Marketing_Expense[2] == None:
+        if Selling_Marketing_Expense[Selling_Marketing_Expense_tabel] == None:
             Selling_Marketing_Expense = 0
         else:
-            sales_expenses_old = Selling_Marketing_Expense[2]['reportedValue']['raw']
+            sales_expenses_old = Selling_Marketing_Expense[Selling_Marketing_Expense_tabel]['reportedValue']['raw']
     return sales_expenses_old
 
 def depreciation_expenses_new(depreciation_expenses): 
@@ -484,6 +499,10 @@ def after_tax_income_nonoperational_old(ticker_is):
     return after_tax_income_nonoperational
 
 def comprehensive_income_EPS_new(comprehensive_income):
+    comprehensive_income_tabel = pd.DataFrame(comprehensive_income)
+    comprehensive_income_tabel = comprehensive_income_tabel['reportedValue']
+    comprehensive_income_tabel = len(comprehensive_income_tabel)
+    comprehensive_income_tabel = comprehensive_income_tabel -1
     if comprehensive_income == []:
         comprehensive_income = [0, 0, 0, 0]
         comprehensive_income_EPS_new = comprehensive_income[3]
@@ -495,13 +514,17 @@ def comprehensive_income_EPS_new(comprehensive_income):
         comprehensive_income_EPS_new = comprehensive_income[3]
     else:
         comprehensive_income
-        if comprehensive_income[3] == None:
+        if comprehensive_income[comprehensive_income_tabel] == None:
             comprehensive_income_EPS_new = 0
         else:
-            comprehensive_income_EPS_new = comprehensive_income[3]['reportedValue']['raw']
+            comprehensive_income_EPS_new = comprehensive_income[comprehensive_income_tabel]['reportedValue']['raw']
     return comprehensive_income_EPS_new
 
 def comprehensive_income_EPS_old(comprehensive_income):
+    comprehensive_income_tabel = pd.DataFrame(comprehensive_income)
+    comprehensive_income_tabel = comprehensive_income_tabel['reportedValue']
+    comprehensive_income_tabel = len(comprehensive_income_tabel)
+    comprehensive_income_tabel = comprehensive_income_tabel -2
     if comprehensive_income == []:
         comprehensive_income = [0, 0, 0, 0]
         comprehensive_income_EPS_old = comprehensive_income[2]
@@ -510,16 +533,21 @@ def comprehensive_income_EPS_old(comprehensive_income):
         comprehensive_income_EPS_old = comprehensive_income[2]
     elif comprehensive_income == None:
         comprehensive_income = [0, 0, 0, 0]
-        comprehensive_income_EPS_old = comprehensive_income[2]
+        comprehensive_income_EPS_old = comprehensive_income[comprehensive_income_tabel]
     else:
         comprehensive_income
         if comprehensive_income[2] == None:
             comprehensive_income_EPS_old = 0
         else:
-            comprehensive_income_EPS_old = comprehensive_income[2]['reportedValue']['raw']
+            comprehensive_income_EPS_old = comprehensive_income[comprehensive_income_tabel]['reportedValue']['raw']
     return comprehensive_income_EPS_old
 
+
 def income_per_share_new(income_per_share):
+    income_per_share_tabel = pd.DataFrame(income_per_share)
+    income_per_share_tabel = income_per_share_tabel['reportedValue']
+    income_per_share_tabel = len(income_per_share_tabel)
+    income_per_share_tabel = income_per_share_tabel -1
     if income_per_share == []:
         income_per_share = [0, 0, 0, 0]
         income_per_share_new = income_per_share[3]
@@ -531,13 +559,17 @@ def income_per_share_new(income_per_share):
         income_per_share_new = income_per_share[3]
     else:
         income_per_share
-        if income_per_share[3] == None:
+        if income_per_share[income_per_share_tabel] == None:
             income_per_share_new = 0
         else:
-            income_per_share_new = income_per_share[3]['reportedValue']['raw']
+            income_per_share_new = income_per_share[income_per_share_tabel]['reportedValue']['raw']
     return income_per_share_new
 
 def income_per_share_old(income_per_share):
+    income_per_share_tabel = pd.DataFrame(income_per_share)
+    income_per_share_tabel = income_per_share_tabel['reportedValue']
+    income_per_share_tabel = len(income_per_share_tabel)
+    income_per_share_tabel = income_per_share_tabel -2
     if income_per_share == []:
         income_per_share = [0, 0, 0, 0]
         income_per_share_old = income_per_share[2]
@@ -549,11 +581,55 @@ def income_per_share_old(income_per_share):
         income_per_share_old = income_per_share[2]
     else:
         income_per_share
-        if income_per_share[2] == None:
+        if income_per_share[income_per_share_tabel] == None:
             income_per_share_old = 0
         else:
-            income_per_share_old = income_per_share[2]['reportedValue']['raw']
+            income_per_share_old = income_per_share[income_per_share_tabel]['reportedValue']['raw']
     return income_per_share_old
+
+def fx_rate_effect_on_cash_new(fx_rate_effect_on_cash):
+    fx_rate_effect_on_cash_tabel = pd.DataFrame(fx_rate_effect_on_cash)
+    fx_rate_effect_on_cash_tabel = fx_rate_effect_on_cash_tabel['reportedValue']
+    fx_rate_effect_on_cash_tabel = len(fx_rate_effect_on_cash_tabel)
+    fx_rate_effect_on_cash_tabel = fx_rate_effect_on_cash_tabel -1
+    if fx_rate_effect_on_cash == []:
+        fx_rate_effect_on_cash = [0, 0, 0, 0]
+        fx_rate_effect_on_cash_new = fx_rate_effect_on_cash[3]
+    elif fx_rate_effect_on_cash == 0:
+        fx_rate_effect_on_cash = [0, 0, 0, 0]
+        fx_rate_effect_on_cash_new = fx_rate_effect_on_cash[3]
+    elif fx_rate_effect_on_cash == None:
+        fx_rate_effect_on_cash = [0, 0, 0, 0]
+        fx_rate_effect_on_cash_new = fx_rate_effect_on_cash[3]
+    else:
+        fx_rate_effect_on_cash
+        if fx_rate_effect_on_cash[fx_rate_effect_on_cash_tabel] == None:
+            fx_rate_effect_on_cash_new = 0
+        else:
+            fx_rate_effect_on_cash_new = fx_rate_effect_on_cash[fx_rate_effect_on_cash_tabel]['reportedValue']['raw']
+    return fx_rate_effect_on_cash_new
+
+def fx_rate_effect_on_cash_old(fx_rate_effect_on_cash):
+    fx_rate_effect_on_cash_tabel = pd.DataFrame(fx_rate_effect_on_cash)
+    fx_rate_effect_on_cash_tabel = fx_rate_effect_on_cash_tabel['reportedValue']
+    fx_rate_effect_on_cash_tabel = len(fx_rate_effect_on_cash_tabel)
+    fx_rate_effect_on_cash_tabel = fx_rate_effect_on_cash_tabel -2
+    if fx_rate_effect_on_cash == []:
+        fx_rate_effect_on_cash = [0, 0, 0, 0]
+        fx_rate_effect_on_cash_old = fx_rate_effect_on_cash[2]
+    elif fx_rate_effect_on_cash == 0:
+        fx_rate_effect_on_cash = [0, 0, 0, 0]
+        fx_rate_effect_on_cash_old = fx_rate_effect_on_cash[2]
+    elif fx_rate_effect_on_cash == None:
+        fx_rate_effect_on_cash = [0, 0, 0, 0]
+        fx_rate_effect_on_cash_old = fx_rate_effect_on_cash[2]
+    else:
+        fx_rate_effect_on_cash
+        if fx_rate_effect_on_cash[fx_rate_effect_on_cash_tabel] == None:
+            fx_rate_effect_on_cash_old = 0
+        else:
+            fx_rate_effect_on_cash_old = fx_rate_effect_on_cash[fx_rate_effect_on_cash_tabel]['reportedValue']['raw']
+    return fx_rate_effect_on_cash_old
 
 #variable balence sheet
 cash_and_equivalents_new = cash_and_equivalents_new(ticker_bs)
@@ -590,12 +666,12 @@ financing_cash_flow_new = financing_cash_flow_new(ticker_cf)
 financing_cash_flow_old = financing_cash_flow_old(ticker_cf)
 cash_and_equivalents_beginning_new = cash_and_equivalents_beginning_new(ticker_bs)
 cash_and_equivalents_beginning_old = cash_and_equivalents_beginning_old(ticker_bs)
-#fx_rate_effect_on_cash_new = 0
-#fx_rate_effect_on_cash_old = 0
+fx_rate_effect_on_cash_new = [fx_rate_effect_on_cash_new(fx_rate_effect_on_cash)]
+fx_rate_effect_on_cash_old = [fx_rate_effect_on_cash_old(fx_rate_effect_on_cash)]
 cash_and_equivalents_ending_new = cash_and_equivalents_ending_new(ticker_bs)
 cash_and_equivalents_ending_old = cash_and_equivalents_ending_old(ticker_bs)
-cash_and_equivalents_changes_new = cash_and_equivalents_ending_new - cash_and_equivalents_beginning_new
-cash_and_equivalents_changes_old = cash_and_equivalents_ending_old - cash_and_equivalents_beginning_old
+cash_and_equivalents_changes_new = 0
+cash_and_equivalents_changes_old = 0
 
 #variable incomestatement
 revenues_new = revenues_new(ticker_is)
@@ -642,13 +718,13 @@ tabel_bs_old = pd.DataFrame([[cash_and_equivalents_old, account_receivables_thir
 tabel_cf_new = pd.DataFrame([[operating_cash_flow_new, investing_cash_flow_new, fixed_asset_expenditure_new, financing_cash_flow_new, cash_and_equivalents_beginning_new, cash_and_equivalents_changes_new, cash_and_equivalents_ending_new, ticker_kode, year_new]],
             #index=[' '], 
             columns=['operating_cash_flow', 'investing_cash_flow', 'fixed_asset_expenditure', 'financing_cash_flow', 'cash_and_equivalents_beginning', 'cash_and_equivalents_changes', 'cash_and_equivalents_ending', 'ticker_kode', 'year'])
-#print(tabel_cf_new)
+print(tabel_cf_new)
 
 #print("=======data lama=======")
 tabel_cf_old = pd.DataFrame([[operating_cash_flow_old, investing_cash_flow_old, fixed_asset_expenditure_old, financing_cash_flow_old, cash_and_equivalents_beginning_old, cash_and_equivalents_changes_old, cash_and_equivalents_ending_old, ticker_kode, year_old]],
             #index=[' '], 
             columns=['operating_cash_flow', 'investing_cash_flow', 'fixed_asset_expenditure', 'financing_cash_flow', 'cash_and_equivalents_beginning', 'cash_and_equivalents_changes', 'cash_and_equivalents_ending', 'ticker_kode', 'year'])
-#print(tabel_cf_old)
+print(tabel_cf_old)
 
 tabel_is_new = pd.DataFrame([[revenues_new, cost_of_goods_sold_new, gross_income_new, sales_expenses_new, sales_and_admin_expenses_new, depreciation_expenses_new, pretax_income_new, taxes_expenses_new, after_taxes_income_op_new, after_tax_income_nonoperational_new, after_tax_income_new, comprehensive_income_EPS_new, income_per_share_new, ticker_kode, year_new]],
             #index=[' '], 
@@ -663,21 +739,8 @@ tabel_is_old = pd.DataFrame([[revenues_old, cost_of_goods_sold_old, gross_income
 
 '''
 erorr
-tabel_is
-fx_rate_effect_on_cash, 
-fx_rate_effect_on_cash
+tabel_cf
+cash_and_equivalents_changes
 '''
 
-'''
-tabel_cf_new1 = pd.DataFrame([[operating_cash_flow_new, investing_cash_flow_new, fixed_asset_expenditure_new, financing_cash_flow_new, cash_and_equivalents_beginning_new, cash_and_equivalents_changes_new]],
-            #index=[' '], 
-            columns=['operating_cash_flow', 'investing_cash_flow', 'fixed_asset_expenditure', 'financing_cash_flow', 'cash_and_equivalents_beginning', 'cash_and_equivalents_changes'])
-print(tabel_cf_new1)
 
-print("=="*50)
-
-tabel_cf_new2 = pd.DataFrame([[cash_and_equivalents_ending_new, ticker_kode, year_new]],
-            #index=[' '], 
-            columns=['cash_and_equivalents_ending', 'ticker_kode', 'year'])
-print(tabel_cf_new2)
-'''
