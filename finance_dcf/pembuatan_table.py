@@ -51,7 +51,7 @@ tax_expenses = json_data['context']['dispatcher']['stores']['QuoteTimeSeriesStor
 after_tax_income_operational = json_data['context']['dispatcher']['stores']['QuoteTimeSeriesStore']['timeSeries']['annualNetIncomeDiscontinuousOperations']
 
 comprehensive_income = json_data['context']['dispatcher']['stores']['QuoteTimeSeriesStore']['timeSeries']['annualBasicEPS'] #EPS
-
+income_per_share = json_data['context']['dispatcher']['stores']['QuoteTimeSeriesStore']['timeSeries']['annualReconciledDepreciation']
 
 
 #print(after_tax_income_operational)
@@ -69,7 +69,7 @@ ticker = yf.Ticker(ticker_kode)
 ticker_bs = ticker.balance_sheet
 ticker_cf = ticker.cashflow
 ticker_is = ticker.financials
-print(ticker_is)
+#print(ticker_is)
 
 #print(ticker_cf)
 year_new = ticker_bs.columns[0]
@@ -519,7 +519,41 @@ def comprehensive_income_EPS_old(comprehensive_income):
             comprehensive_income_EPS_old = comprehensive_income[2]['reportedValue']['raw']
     return comprehensive_income_EPS_old
 
+def income_per_share_new(income_per_share):
+    if income_per_share == []:
+        income_per_share = [0, 0, 0, 0]
+        income_per_share_new = income_per_share[3]
+    elif income_per_share == 0:
+        income_per_share = [0, 0, 0, 0]
+        income_per_share_new = income_per_share[3]
+    elif income_per_share == None:
+        income_per_share = [0, 0, 0, 0]
+        income_per_share_new = income_per_share[3]
+    else:
+        income_per_share
+        if income_per_share[3] == None:
+            income_per_share_new = 0
+        else:
+            income_per_share_new = income_per_share[3]['reportedValue']['raw']
+    return income_per_share_new
 
+def income_per_share_old(income_per_share):
+    if income_per_share == []:
+        income_per_share = [0, 0, 0, 0]
+        income_per_share_old = income_per_share[2]
+    elif income_per_share == 0:
+        income_per_share = [0, 0, 0, 0]
+        income_per_share_old = income_per_share[2]
+    elif income_per_share == None:
+        income_per_share = [0, 0, 0, 0]
+        income_per_share_old = income_per_share[2]
+    else:
+        income_per_share
+        if income_per_share[2] == None:
+            income_per_share_old = 0
+        else:
+            income_per_share_old = income_per_share[2]['reportedValue']['raw']
+    return income_per_share_old
 
 #variable balence sheet
 cash_and_equivalents_new = cash_and_equivalents_new(ticker_bs)
@@ -540,6 +574,10 @@ total_non_current_liabilities_new = total_liabilities_new - total_current_liabil
 total_non_current_liabilities_old = total_liabilities_old - total_current_liabilities_old
 total_equity_new = total_assets_new - total_liabilities_new
 total_equity_old = total_assets_old - total_liabilities_old
+account_receivables_third_party_new = [0]
+account_receivables_third_party_old = [0]
+account_receivables_related_party_new = [0]
+account_receivables_related_party_old = [0]
 
 #Variable cash flow
 operating_cash_flow_new = operating_cash_flow_new(ticker_cf)
@@ -583,19 +621,21 @@ after_tax_income_nonoperational_old = after_tax_income_nonoperational_old(ticker
 after_tax_income_new = [0]
 after_tax_income_old = [0]
 comprehensive_income_EPS_new = [comprehensive_income_EPS_new(comprehensive_income)]
+income_per_share_new = income_per_share_new(income_per_share)
+income_per_share_old = income_per_share_old(income_per_share)
 
 #print("=======data terbaru=======")
-tabel_bs_new = pd.DataFrame([[cash_and_equivalents_new, 0, 0, total_current_assets_new, fixed_assets_new, total_non_current_assets_new, total_assets_new, total_current_liabilities_new, total_non_current_liabilities_new, total_equity_new, ticker_kode, year_new]],
+tabel_bs_new = pd.DataFrame([[cash_and_equivalents_new, account_receivables_third_party_new, account_receivables_related_party_new, total_current_assets_new, fixed_assets_new, total_non_current_assets_new, total_assets_new, total_current_liabilities_new, total_non_current_liabilities_new, total_equity_new, ticker_kode, year_new]],
             #index=[' '], 
             columns=['cash_and_equivalents', 'account_receivables_third_party', 'account_receivables_related_party', 'total_current_assets', 'fixed_assets', 'total_non_current_assets', 'total_assets', 'total_current_liabilities', 'total_non_current_liabilities', 'total_equity', 'ticker_kode', 'year'])
-#print(tabel_bs_new)
+print(tabel_bs_new)
 
 #print("=======data satu tahun sebelumnya=======")
 
-tabel_bs_old = pd.DataFrame([[cash_and_equivalents_old, 0, 0, total_current_assets_old, fixed_assets_old, total_non_current_assets_old, total_assets_old, total_current_liabilities_old, total_non_current_liabilities_old, total_equity_old, ticker_kode, year_old]],
+tabel_bs_old = pd.DataFrame([[cash_and_equivalents_old, account_receivables_third_party_old, account_receivables_related_party_old, total_current_assets_old, fixed_assets_old, total_non_current_assets_old, total_assets_old, total_current_liabilities_old, total_non_current_liabilities_old, total_equity_old, ticker_kode, year_old]],
             #index=[' '], 
             columns=['cash_and_equivalents', 'account_receivables_third_party', 'account_receivables_related_party', 'total_current_assets', 'fixed_assets', 'total_non_current_assets', 'total_assets', 'total_current_liabilities', 'total_non_current_liabilities', 'total_equity', 'ticker_kode', 'year'])
-#print(tabel_bs_old)
+print(tabel_bs_old)
 
 
 #print("=======data terbaru=======")
@@ -610,9 +650,15 @@ tabel_cf_old = pd.DataFrame([[operating_cash_flow_old, investing_cash_flow_old, 
             columns=['operating_cash_flow', 'investing_cash_flow', 'fixed_asset_expenditure', 'financing_cash_flow', 'cash_and_equivalents_beginning', 'cash_and_equivalents_changes', 'cash_and_equivalents_ending', 'ticker_kode', 'year'])
 #print(tabel_cf_old)
 
-tabel_is_new = pd.DataFrame([[revenues_new, cost_of_goods_sold_new, gross_income_new, sales_expenses_new, sales_and_admin_expenses_new, depreciation_expenses_new, pretax_income_new, taxes_expenses_new, after_taxes_income_op_new, after_tax_income_nonoperational_new, after_tax_income_new, comprehensive_income_EPS_new]],
+tabel_is_new = pd.DataFrame([[revenues_new, cost_of_goods_sold_new, gross_income_new, sales_expenses_new, sales_and_admin_expenses_new, depreciation_expenses_new, pretax_income_new, taxes_expenses_new, after_taxes_income_op_new, after_tax_income_nonoperational_new, after_tax_income_new, comprehensive_income_EPS_new, income_per_share_new, ticker_kode, year_new]],
             #index=[' '], 
-            columns=['revenues', 'cost_of_goods_sold', 'gross_income', 'sales_expenses', 'sales_and_admin_expenses', 'depreciation_expenses', 'pretax_income', 'tax_expenses', 'after_tax_income_operational', 'after_tax_income_nonoperational', 'after_tax_income_new', 'comprehensive_income'])
-print(tabel_is_new)
+            columns=['revenues', 'cost_of_goods_sold', 'gross_income', 'sales_expenses', 'sales_and_admin_expenses', 'depreciation_expenses', 'pretax_income', 'tax_expenses', 'after_tax_income_operational', 'after_tax_income_nonoperational', 'after_tax_income', 'comprehensive_income', 'income_per_share', 'ticker_kode', 'year'])
+#print(tabel_is_new)
+
+tabel_is_old = pd.DataFrame([[revenues_old, cost_of_goods_sold_old, gross_income_old, sales_expenses_old, sales_and_admin_expenses_old, depreciation_expenses_old, pretax_income_old, taxes_expenses_old, after_taxes_income_op_old, after_tax_income_nonoperational_old, after_tax_income_old, comprehensive_income_EPS_old, income_per_share_old, ticker_kode, year_old]],
+            #index=[' '], 
+            columns=['revenues', 'cost_of_goods_sold', 'gross_income', 'sales_expenses', 'sales_and_admin_expenses', 'depreciation_expenses', 'pretax_income', 'tax_expenses', 'after_tax_income_operational', 'after_tax_income_nonoperational', 'after_tax_income', 'comprehensive_income', 'income_per_share', 'ticker_kode', 'year'])
+#print(tabel_is_old)
 
 
+account_receivables_third_party_old, account_receivables_related_party_old
