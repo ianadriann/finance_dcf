@@ -751,7 +751,7 @@ income_per_share_old = income_per_share_old(income_per_share)
 tabel_bs_new = pd.DataFrame([[cash_and_equivalents_new, account_receivables_third_party_new, account_receivables_related_party_new, total_current_assets_new, fixed_assets_new, total_non_current_assets_new, total_assets_new, total_current_liabilities_new, total_non_current_liabilities_new, total_equity_new, ticker_kode, year_new]],
             #index=[' '], 
             columns=['cash_and_equivalents', 'account_receivables_third_party', 'account_receivables_related_party', 'total_current_assets', 'fixed_assets', 'total_non_current_assets', 'total_assets', 'total_current_liabilities', 'total_non_current_liabilities', 'total_equity', 'ticker_kode', 'year'])
-#print(tabel_bs_new)
+print(tabel_bs_new)
 
 #print("=======data satu tahun sebelumnya=======")
 
@@ -776,17 +776,19 @@ tabel_cf_old = pd.DataFrame([[operating_cash_flow_old, investing_cash_flow_old, 
 tabel_is_new = pd.DataFrame([[revenues_new, cost_of_goods_sold_new, gross_income_new, sales_expenses_new, sales_and_admin_expenses_new, depreciation_expenses_new, pretax_income_new, taxes_expenses_new, after_taxes_income_op_new, after_tax_income_nonoperational_new, after_tax_income_new, comprehensive_income_EPS_new, income_per_share_new, ticker_kode, year_new]],
             #index=[' '], 
             columns=['revenues', 'cost_of_goods_sold', 'gross_income', 'sales_expenses', 'sales_and_admin_expenses', 'depreciation_expenses', 'pretax_income', 'tax_expenses', 'after_tax_income_operational', 'after_tax_income_nonoperational', 'after_tax_income', 'comprehensive_income', 'income_per_share', 'ticker_kode', 'year'])
-print(tabel_is_new)
+#print(tabel_is_new)
 
 tabel_is_old = pd.DataFrame([[revenues_old, cost_of_goods_sold_old, gross_income_old, sales_expenses_old, sales_and_admin_expenses_old, depreciation_expenses_old, pretax_income_old, taxes_expenses_old, after_taxes_income_op_old, after_tax_income_nonoperational_old, after_tax_income_old, comprehensive_income_EPS_old, income_per_share_old, ticker_kode, year_old]],
             #index=[' '], 
             columns=['revenues', 'cost_of_goods_sold', 'gross_income', 'sales_expenses', 'sales_and_admin_expenses', 'depreciation_expenses', 'pretax_income', 'tax_expenses', 'after_tax_income_operational', 'after_tax_income_nonoperational', 'after_tax_income', 'comprehensive_income', 'income_per_share', 'ticker_kode', 'year'])
-print(tabel_is_old)
+#print(tabel_is_old)
 
 
 '''
 erorr
-tabel_is
-sales_and_admin_expenses
-'''
 
+sales_and_admin_expenses
+after_tax_income_new
+account_receivables_third_party
+account_receivables_related_party
+'''
