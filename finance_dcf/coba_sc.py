@@ -50,121 +50,71 @@ quarterly_bs = json_data['context']['dispatcher']['stores']['QuoteSummaryStore']
 
 
 
-fx_rate_effect_on_cash = json_data_cashflow['context']['dispatcher']['stores']['QuoteTimeSeriesStore']['timeSeries']['annualEffectOfExchangeRateChanges']
+cash_and_equivalents_changes = json_data_cashflow['context']['dispatcher']['stores']['QuoteTimeSeriesStore']['timeSeries']['annualOtherCashAdjustmentOutsideChangeinCash']
 
 
-def fx_rate_effect_on_cash_new(fx_rate_effect_on_cash):
-    if fx_rate_effect_on_cash == []:
-        fx_rate_effect_on_cash = [0, 0, 0, 0]
-        fx_rate_effect_on_cash_new = fx_rate_effect_on_cash[3]
-    elif fx_rate_effect_on_cash == 0:
-        fx_rate_effect_on_cash = [0, 0, 0, 0]
-        fx_rate_effect_on_cash_new = fx_rate_effect_on_cash[3]
-    elif fx_rate_effect_on_cash == None:
-        fx_rate_effect_on_cash = [0, 0, 0, 0]
-        fx_rate_effect_on_cash_new = fx_rate_effect_on_cash[3]
+
+
+def cash_and_equivalents_changes_new(cash_and_equivalents_changes):
+    if cash_and_equivalents_changes == []:
+        cash_and_equivalents_changes = [0, 0, 0, 0]
+        cash_and_equivalents_changes_new = cash_and_equivalents_changes[3]
+    elif cash_and_equivalents_changes == 0:
+        cash_and_equivalents_changes = [0, 0, 0, 0]
+        cash_and_equivalents_changes_new = cash_and_equivalents_changes[3]
+    elif cash_and_equivalents_changes == None:
+        cash_and_equivalents_changes = [0, 0, 0, 0]
+        cash_and_equivalents_changes_new = cash_and_equivalents_changes[3]
     else:
-        fx_rate_effect_on_cash
-        if fx_rate_effect_on_cash[3] == None:
-            fx_rate_effect_on_cash_new = 0
+        cash_and_equivalents_changes
+        cash_and_equivalents_changes_tabel = pd.DataFrame(cash_and_equivalents_changes)
+        cash_and_equivalents_changes_tabel = cash_and_equivalents_changes_tabel['reportedValue']
+        cash_and_equivalents_changes_tabel = len(cash_and_equivalents_changes_tabel)
+        cash_and_equivalents_changes_tabel = cash_and_equivalents_changes_tabel -1
+        if cash_and_equivalents_changes[cash_and_equivalents_changes_tabel] == None:
+            cash_and_equivalents_changes = 0
         else:
-            fx_rate_effect_on_cash_new = fx_rate_effect_on_cash[3]['reportedValue']['raw']
-    return fx_rate_effect_on_cash_new
+            cash_and_equivalents_changes_new = cash_and_equivalents_changes[cash_and_equivalents_changes_tabel]['reportedValue']['raw']
+    return cash_and_equivalents_changes_new
 
-def fx_rate_effect_on_cash_old(fx_rate_effect_on_cash):
-    if fx_rate_effect_on_cash == []:
-        fx_rate_effect_on_cash = [0, 0, 0, 0]
-        fx_rate_effect_on_cash_old = fx_rate_effect_on_cash[2]
-    elif fx_rate_effect_on_cash == 0:
-        fx_rate_effect_on_cash = [0, 0, 0, 0]
-        fx_rate_effect_on_cash_old = fx_rate_effect_on_cash[2]
-    elif fx_rate_effect_on_cash == None:
-        fx_rate_effect_on_cash = [0, 0, 0, 0]
-        fx_rate_effect_on_cash_old = fx_rate_effect_on_cash[2]
+def cash_and_equivalents_changes_old(cash_and_equivalents_changes):
+    if cash_and_equivalents_changes == []:
+        cash_and_equivalents_changes = [0, 0, 0, 0]
+        cash_and_equivalents_changes_old = cash_and_equivalents_changes[2]
+    elif cash_and_equivalents_changes == 0:
+        cash_and_equivalents_changes = [0, 0, 0, 0]
+        cash_and_equivalents_changes_old = cash_and_equivalents_changes[2]
+    elif cash_and_equivalents_changes == None:
+        cash_and_equivalents_changes = [0, 0, 0, 0]
+        cash_and_equivalents_changes_old = cash_and_equivalents_changes[2]
     else:
-        fx_rate_effect_on_cash
-        if fx_rate_effect_on_cash[2] == None:
-            fx_rate_effect_on_cash_old = 0
+        cash_and_equivalents_changes
+        cash_and_equivalents_changes_tabel = pd.DataFrame(cash_and_equivalents_changes)
+        cash_and_equivalents_changes_tabel = cash_and_equivalents_changes_tabel['reportedValue']
+        cash_and_equivalents_changes_tabel = len(cash_and_equivalents_changes_tabel)
+        cash_and_equivalents_changes_tabel = cash_and_equivalents_changes_tabel -2
+        if cash_and_equivalents_changes[cash_and_equivalents_changes_tabel] == None:
+            cash_and_equivalents_changes = 0
         else:
-            fx_rate_effect_on_cash_old = fx_rate_effect_on_cash[2]['reportedValue']['raw']
-    return fx_rate_effect_on_cash_old
-
-#print(fx_rate_effect_on_cash_old(fx_rate_effect_on_cash))
-
-def fx_rate_effect_on_cash_new(fx_rate_effect_on_cash):
-    if fx_rate_effect_on_cash == []:
-        fx_rate_effect_on_cash = [0, 0, 0, 0]
-        fx_rate_effect_on_cash_new = fx_rate_effect_on_cash[3]
-    elif fx_rate_effect_on_cash == 0:
-        fx_rate_effect_on_cash = [0, 0, 0, 0]
-        fx_rate_effect_on_cash_new = fx_rate_effect_on_cash[3]
-    elif fx_rate_effect_on_cash == None:
-        fx_rate_effect_on_cash = [0, 0, 0, 0]
-        fx_rate_effect_on_cash_new = fx_rate_effect_on_cash[3]
-    else:
-        fx_rate_effect_on_cash
-        if fx_rate_effect_on_cash[3] == None:
-            fx_rate_effect_on_cash_new = 0
-        else:
-            fx_rate_effect_on_cash_new = fx_rate_effect_on_cash[3]['reportedValue']['raw']
-    return fx_rate_effect_on_cash_new
+            cash_and_equivalents_changes_old = cash_and_equivalents_changes[cash_and_equivalents_changes_tabel]['reportedValue']['raw']
+    return cash_and_equivalents_changes_old
 
 
+depreciation_expenses = json_data['context']['dispatcher']['stores']['QuoteSummaryStore']['incomeStatementHistory']['incomeStatementHistory']
 
-#print(tabel2)
-
-#rint(tabel1)
-'''
-#jumlah = len(fx_rate_effect_on_cash.columns)
-tabel = pd.DataFrame(fx_rate_effect_on_cash)
-tabel1 = tabel['reportedValue']
-tabel2 = pd.DataFrame(tabel1)
-
-tabel3 = len(tabel2)
-jumlah = tabel2 - 1
-coba = 'ianadrian{}bustan'
-coba1 = coba.format(jumlah)
-
-'''
-'''
-fx_rate_effect_on_cash_tabel = pd.DataFrame(fx_rate_effect_on_cash)
-fx_rate_effect_on_cash_tabel = fx_rate_effect_on_cash_tabel['reportedValue']
-fx_rate_effect_on_cash_tabel = len(fx_rate_effect_on_cash_tabel)
-fx_rate_effect_on_cash_tabel = fx_rate_effect_on_cash_tabel -1
-
-
-if fx_rate_effect_on_cash[fx_rate_effect_on_cash_tabel] == None:
-    print("oke beres")
-else:
-    print(fx_rate_effect_on_cash[fx_rate_effect_on_cash_tabel]['reportedValue']['raw'])
-'''
-
-def fx_rate_effect_on_cash_new(fx_rate_effect_on_cash):
-    fx_rate_effect_on_cash_tabel = pd.DataFrame(fx_rate_effect_on_cash)
-    fx_rate_effect_on_cash_tabel = fx_rate_effect_on_cash_tabel['reportedValue']
-    fx_rate_effect_on_cash_tabel = len(fx_rate_effect_on_cash_tabel)
-    fx_rate_effect_on_cash_tabel = fx_rate_effect_on_cash_tabel -1
-    if fx_rate_effect_on_cash == []:
-        fx_rate_effect_on_cash = [0, 0, 0, 0]
-        fx_rate_effect_on_cash_new = fx_rate_effect_on_cash[3]
-    elif fx_rate_effect_on_cash == 0:
-        fx_rate_effect_on_cash = [0, 0, 0, 0]
-        fx_rate_effect_on_cash_new = fx_rate_effect_on_cash[3]
-    elif fx_rate_effect_on_cash == None:
-        fx_rate_effect_on_cash = [0, 0, 0, 0]
-        fx_rate_effect_on_cash_new = fx_rate_effect_on_cash[3]
-    else:
-        fx_rate_effect_on_cash
-        if fx_rate_effect_on_cash[fx_rate_effect_on_cash_tabel] == None:
-            fx_rate_effect_on_cash_new = 0
-        else:
-            fx_rate_effect_on_cash_new = fx_rate_effect_on_cash[fx_rate_effect_on_cash_tabel]['reportedValue']['raw']
-    return fx_rate_effect_on_cash_new
-
-print(fx_rate_effect_on_cash_new(fx_rate_effect_on_cash))
+depreciation_expenses = pd.DataFrame(depreciation_expenses)
+depreciation_expenses = depreciation_expenses['incomeBeforeTax']
 
 
 
 
+for i in depreciation_expenses:
+    statement = {}
+    for key, val in i.items()
+    
+
+
+
+print(depreciation_expenses)
 
 

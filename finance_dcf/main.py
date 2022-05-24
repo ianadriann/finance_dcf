@@ -28,7 +28,7 @@ url_profile = 'https://finance.yahoo.com/quote/{}/profile?p={}'
 url_financials = 'https://finance.yahoo.com/quote/{}/financials?p={}'
 url_cashflow = 'https://finance.yahoo.com/quote/{}/cash-flow?p={}'
 
-ticker_kode = "ATIC.JK"
+ticker_kode = "AALI.JK"
 #headers = { 'User-Agent' : 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.2 Safari/605.1.15' }
 headers = { 'User-Agent' : 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.64 Safari/537.36' }
 response = requests.get(url_financials.format(ticker_kode, ticker_kode),headers={'user-agent':'my-app'})
@@ -59,6 +59,7 @@ comprehensive_income = json_data['context']['dispatcher']['stores']['QuoteTimeSe
 income_per_share = json_data['context']['dispatcher']['stores']['QuoteTimeSeriesStore']['timeSeries']['annualReconciledDepreciation']
 
 fx_rate_effect_on_cash = json_data_cashflow['context']['dispatcher']['stores']['QuoteTimeSeriesStore']['timeSeries']['annualEffectOfExchangeRateChanges']
+cash_and_equivalents_changes = json_data_cashflow['context']['dispatcher']['stores']['QuoteTimeSeriesStore']['timeSeries']['annualOtherCashAdjustmentOutsideChangeinCash']
 
 
 #print(after_tax_income_operational)
@@ -333,10 +334,6 @@ def gross_income_old(ticker_is):
     return gross_income
 
 def sales_expenses_new(Selling_Marketing_Expense):
-    Selling_Marketing_Expense_tabel = pd.DataFrame(Selling_Marketing_Expense)
-    Selling_Marketing_Expense_tabel = Selling_Marketing_Expense_tabel['reportedValue']
-    Selling_Marketing_Expense_tabel = len(Selling_Marketing_Expense_tabel)
-    Selling_Marketing_Expense_tabel = Selling_Marketing_Expense_tabel -1
     if Selling_Marketing_Expense == []:
         Selling_Marketing_Expense = [0, 0, 0, 0]
         sales_expenses_new = Selling_Marketing_Expense[3]
@@ -348,6 +345,10 @@ def sales_expenses_new(Selling_Marketing_Expense):
         sales_expenses_new = Selling_Marketing_Expense[3]
     else:
         Selling_Marketing_Expense
+        Selling_Marketing_Expense_tabel = pd.DataFrame(Selling_Marketing_Expense)
+        Selling_Marketing_Expense_tabel = Selling_Marketing_Expense_tabel['reportedValue']
+        Selling_Marketing_Expense_tabel = len(Selling_Marketing_Expense_tabel)
+        Selling_Marketing_Expense_tabel = Selling_Marketing_Expense_tabel -1
         if Selling_Marketing_Expense[Selling_Marketing_Expense_tabel] == None:
             Selling_Marketing_Expense = 0
         else:
@@ -355,10 +356,6 @@ def sales_expenses_new(Selling_Marketing_Expense):
     return sales_expenses_new
 
 def sales_expenses_old(Selling_Marketing_Expense):
-    Selling_Marketing_Expense_tabel = pd.DataFrame(Selling_Marketing_Expense)
-    Selling_Marketing_Expense_tabel = Selling_Marketing_Expense_tabel['reportedValue']
-    Selling_Marketing_Expense_tabel = len(Selling_Marketing_Expense_tabel)
-    Selling_Marketing_Expense_tabel = Selling_Marketing_Expense_tabel -2
     if Selling_Marketing_Expense == []:
         Selling_Marketing_Expense = [0, 0, 0, 0]
         sales_expenses_old = Selling_Marketing_Expense[2]
@@ -370,6 +367,10 @@ def sales_expenses_old(Selling_Marketing_Expense):
         sales_expenses_old = Selling_Marketing_Expense[2]
     else:
         Selling_Marketing_Expense
+        Selling_Marketing_Expense_tabel = pd.DataFrame(Selling_Marketing_Expense)
+        Selling_Marketing_Expense_tabel = Selling_Marketing_Expense_tabel['reportedValue']
+        Selling_Marketing_Expense_tabel = len(Selling_Marketing_Expense_tabel)
+        Selling_Marketing_Expense_tabel = Selling_Marketing_Expense_tabel -2
         if Selling_Marketing_Expense[Selling_Marketing_Expense_tabel] == None:
             Selling_Marketing_Expense = 0
         else:
@@ -395,7 +396,6 @@ def depreciation_expenses_new(depreciation_expenses):
     else:
         get_depreciation_expenses_new = depreciation_expenses_new[0]['incomeBeforeTax']
     return get_depreciation_expenses_new
-
 
 
 def depreciation_expenses_old(depreciation_expenses):
@@ -631,6 +631,52 @@ def fx_rate_effect_on_cash_old(fx_rate_effect_on_cash):
             fx_rate_effect_on_cash_old = fx_rate_effect_on_cash[fx_rate_effect_on_cash_tabel]['reportedValue']['raw']
     return fx_rate_effect_on_cash_old
 
+
+def cash_and_equivalents_changes_new(cash_and_equivalents_changes):
+    if cash_and_equivalents_changes == []:
+        cash_and_equivalents_changes = [0, 0, 0, 0]
+        cash_and_equivalents_changes_new = cash_and_equivalents_changes[3]
+    elif cash_and_equivalents_changes == 0:
+        cash_and_equivalents_changes = [0, 0, 0, 0]
+        cash_and_equivalents_changes_new = cash_and_equivalents_changes[3]
+    elif cash_and_equivalents_changes == None:
+        cash_and_equivalents_changes = [0, 0, 0, 0]
+        cash_and_equivalents_changes_new = cash_and_equivalents_changes[3]
+    else:
+        cash_and_equivalents_changes
+        cash_and_equivalents_changes_tabel = pd.DataFrame(cash_and_equivalents_changes)
+        cash_and_equivalents_changes_tabel = cash_and_equivalents_changes_tabel['reportedValue']
+        cash_and_equivalents_changes_tabel = len(cash_and_equivalents_changes_tabel)
+        cash_and_equivalents_changes_tabel = cash_and_equivalents_changes_tabel -1
+        if cash_and_equivalents_changes[cash_and_equivalents_changes_tabel] == None:
+            cash_and_equivalents_changes = 0
+        else:
+            cash_and_equivalents_changes_new = cash_and_equivalents_changes[cash_and_equivalents_changes_tabel]['reportedValue']['raw']
+    return cash_and_equivalents_changes_new
+
+def cash_and_equivalents_changes_old(cash_and_equivalents_changes):
+    if cash_and_equivalents_changes == []:
+        cash_and_equivalents_changes = [0, 0, 0, 0]
+        cash_and_equivalents_changes_old = cash_and_equivalents_changes[2]
+    elif cash_and_equivalents_changes == 0:
+        cash_and_equivalents_changes = [0, 0, 0, 0]
+        cash_and_equivalents_changes_old = cash_and_equivalents_changes[2]
+    elif cash_and_equivalents_changes == None:
+        cash_and_equivalents_changes = [0, 0, 0, 0]
+        cash_and_equivalents_changes_old = cash_and_equivalents_changes[2]
+    else:
+        cash_and_equivalents_changes
+        cash_and_equivalents_changes_tabel = pd.DataFrame(cash_and_equivalents_changes)
+        cash_and_equivalents_changes_tabel = cash_and_equivalents_changes_tabel['reportedValue']
+        cash_and_equivalents_changes_tabel = len(cash_and_equivalents_changes_tabel)
+        cash_and_equivalents_changes_tabel = cash_and_equivalents_changes_tabel -2
+        if cash_and_equivalents_changes[cash_and_equivalents_changes_tabel] == None:
+            cash_and_equivalents_changes = 0
+        else:
+            cash_and_equivalents_changes_old = cash_and_equivalents_changes[cash_and_equivalents_changes_tabel]['reportedValue']['raw']
+    return cash_and_equivalents_changes_old
+
+
 #variable balence sheet
 cash_and_equivalents_new = cash_and_equivalents_new(ticker_bs)
 cash_and_equivalents_old = cash_and_equivalents_old(ticker_bs)
@@ -670,8 +716,8 @@ fx_rate_effect_on_cash_new = [fx_rate_effect_on_cash_new(fx_rate_effect_on_cash)
 fx_rate_effect_on_cash_old = [fx_rate_effect_on_cash_old(fx_rate_effect_on_cash)]
 cash_and_equivalents_ending_new = cash_and_equivalents_ending_new(ticker_bs)
 cash_and_equivalents_ending_old = cash_and_equivalents_ending_old(ticker_bs)
-cash_and_equivalents_changes_new = 0
-cash_and_equivalents_changes_old = 0
+cash_and_equivalents_changes_new = cash_and_equivalents_changes_new(cash_and_equivalents_changes)
+cash_and_equivalents_changes_old = cash_and_equivalents_changes_old(cash_and_equivalents_changes)
 
 #variable incomestatement
 revenues_new = revenues_new(ticker_is)
@@ -697,6 +743,7 @@ after_tax_income_nonoperational_old = after_tax_income_nonoperational_old(ticker
 after_tax_income_new = [0]
 after_tax_income_old = [0]
 comprehensive_income_EPS_new = [comprehensive_income_EPS_new(comprehensive_income)]
+comprehensive_income_EPS_old = [comprehensive_income_EPS_old(comprehensive_income)]
 income_per_share_new = income_per_share_new(income_per_share)
 income_per_share_old = income_per_share_old(income_per_share)
 
@@ -715,32 +762,31 @@ tabel_bs_old = pd.DataFrame([[cash_and_equivalents_old, account_receivables_thir
 
 
 #print("=======data terbaru=======")
-tabel_cf_new = pd.DataFrame([[operating_cash_flow_new, investing_cash_flow_new, fixed_asset_expenditure_new, financing_cash_flow_new, cash_and_equivalents_beginning_new, cash_and_equivalents_changes_new, cash_and_equivalents_ending_new, ticker_kode, year_new]],
+tabel_cf_new = pd.DataFrame([[operating_cash_flow_new, investing_cash_flow_new, fixed_asset_expenditure_new, financing_cash_flow_new, cash_and_equivalents_beginning_new, fx_rate_effect_on_cash_new, cash_and_equivalents_changes_new, cash_and_equivalents_ending_new, ticker_kode, year_new]],
             #index=[' '], 
-            columns=['operating_cash_flow', 'investing_cash_flow', 'fixed_asset_expenditure', 'financing_cash_flow', 'cash_and_equivalents_beginning', 'cash_and_equivalents_changes', 'cash_and_equivalents_ending', 'ticker_kode', 'year'])
-print(tabel_cf_new)
+            columns=['operating_cash_flow', 'investing_cash_flow', 'fixed_asset_expenditure', 'financing_cash_flow', 'cash_and_equivalents_beginning', 'fx_rate_effect_on_cash', 'cash_and_equivalents_changes', 'cash_and_equivalents_ending', 'ticker_kode', 'year'])
+#print(tabel_cf_new)
 
 #print("=======data lama=======")
-tabel_cf_old = pd.DataFrame([[operating_cash_flow_old, investing_cash_flow_old, fixed_asset_expenditure_old, financing_cash_flow_old, cash_and_equivalents_beginning_old, cash_and_equivalents_changes_old, cash_and_equivalents_ending_old, ticker_kode, year_old]],
+tabel_cf_old = pd.DataFrame([[operating_cash_flow_old, investing_cash_flow_old, fixed_asset_expenditure_old, financing_cash_flow_old, cash_and_equivalents_beginning_old, fx_rate_effect_on_cash_old, cash_and_equivalents_changes_old, cash_and_equivalents_ending_old, ticker_kode, year_old]],
             #index=[' '], 
-            columns=['operating_cash_flow', 'investing_cash_flow', 'fixed_asset_expenditure', 'financing_cash_flow', 'cash_and_equivalents_beginning', 'cash_and_equivalents_changes', 'cash_and_equivalents_ending', 'ticker_kode', 'year'])
-print(tabel_cf_old)
+            columns=['operating_cash_flow', 'investing_cash_flow', 'fixed_asset_expenditure', 'financing_cash_flow', 'cash_and_equivalents_beginning', 'fx_rate_effect_on_cash_old', 'cash_and_equivalents_changes', 'cash_and_equivalents_ending', 'ticker_kode', 'year'])
+#print(tabel_cf_old)
 
 tabel_is_new = pd.DataFrame([[revenues_new, cost_of_goods_sold_new, gross_income_new, sales_expenses_new, sales_and_admin_expenses_new, depreciation_expenses_new, pretax_income_new, taxes_expenses_new, after_taxes_income_op_new, after_tax_income_nonoperational_new, after_tax_income_new, comprehensive_income_EPS_new, income_per_share_new, ticker_kode, year_new]],
             #index=[' '], 
             columns=['revenues', 'cost_of_goods_sold', 'gross_income', 'sales_expenses', 'sales_and_admin_expenses', 'depreciation_expenses', 'pretax_income', 'tax_expenses', 'after_tax_income_operational', 'after_tax_income_nonoperational', 'after_tax_income', 'comprehensive_income', 'income_per_share', 'ticker_kode', 'year'])
-#print(tabel_is_new)
+print(tabel_is_new)
 
 tabel_is_old = pd.DataFrame([[revenues_old, cost_of_goods_sold_old, gross_income_old, sales_expenses_old, sales_and_admin_expenses_old, depreciation_expenses_old, pretax_income_old, taxes_expenses_old, after_taxes_income_op_old, after_tax_income_nonoperational_old, after_tax_income_old, comprehensive_income_EPS_old, income_per_share_old, ticker_kode, year_old]],
             #index=[' '], 
             columns=['revenues', 'cost_of_goods_sold', 'gross_income', 'sales_expenses', 'sales_and_admin_expenses', 'depreciation_expenses', 'pretax_income', 'tax_expenses', 'after_tax_income_operational', 'after_tax_income_nonoperational', 'after_tax_income', 'comprehensive_income', 'income_per_share', 'ticker_kode', 'year'])
-#print(tabel_is_old)
+print(tabel_is_old)
 
 
 '''
 erorr
-tabel_cf
-cash_and_equivalents_changes
+tabel_is
+sales_and_admin_expenses
 '''
-
 
