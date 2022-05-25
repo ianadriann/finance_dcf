@@ -108,13 +108,9 @@ depreciation_expenses = depreciation_expenses['incomeBeforeTax']
 
 
 
-for i in depreciation_expenses:
-    statement = {}
-    for key, val in i.items()
+
     
 
 
-
-print(depreciation_expenses)
 
 
