@@ -499,10 +499,6 @@ def after_tax_income_nonoperational_old(ticker_is):
     return after_tax_income_nonoperational
 
 def comprehensive_income_EPS_new(comprehensive_income):
-    comprehensive_income_tabel = pd.DataFrame(comprehensive_income)
-    comprehensive_income_tabel = comprehensive_income_tabel['reportedValue']
-    comprehensive_income_tabel = len(comprehensive_income_tabel)
-    comprehensive_income_tabel = comprehensive_income_tabel -1
     if comprehensive_income == []:
         comprehensive_income = [0, 0, 0, 0]
         comprehensive_income_EPS_new = comprehensive_income[3]
@@ -514,6 +510,10 @@ def comprehensive_income_EPS_new(comprehensive_income):
         comprehensive_income_EPS_new = comprehensive_income[3]
     else:
         comprehensive_income
+        comprehensive_income_tabel = pd.DataFrame(comprehensive_income)
+        comprehensive_income_tabel = comprehensive_income_tabel['reportedValue']
+        comprehensive_income_tabel = len(comprehensive_income_tabel)
+        comprehensive_income_tabel = comprehensive_income_tabel -1
         if comprehensive_income[comprehensive_income_tabel] == None:
             comprehensive_income_EPS_new = 0
         else:
@@ -521,10 +521,6 @@ def comprehensive_income_EPS_new(comprehensive_income):
     return comprehensive_income_EPS_new
 
 def comprehensive_income_EPS_old(comprehensive_income):
-    comprehensive_income_tabel = pd.DataFrame(comprehensive_income)
-    comprehensive_income_tabel = comprehensive_income_tabel['reportedValue']
-    comprehensive_income_tabel = len(comprehensive_income_tabel)
-    comprehensive_income_tabel = comprehensive_income_tabel -2
     if comprehensive_income == []:
         comprehensive_income = [0, 0, 0, 0]
         comprehensive_income_EPS_old = comprehensive_income[2]
@@ -536,6 +532,10 @@ def comprehensive_income_EPS_old(comprehensive_income):
         comprehensive_income_EPS_old = comprehensive_income[comprehensive_income_tabel]
     else:
         comprehensive_income
+        comprehensive_income_tabel = pd.DataFrame(comprehensive_income)
+        comprehensive_income_tabel = comprehensive_income_tabel['reportedValue']
+        comprehensive_income_tabel = len(comprehensive_income_tabel)
+        comprehensive_income_tabel = comprehensive_income_tabel -2
         if comprehensive_income[2] == None:
             comprehensive_income_EPS_old = 0
         else:
@@ -544,10 +544,6 @@ def comprehensive_income_EPS_old(comprehensive_income):
 
 
 def income_per_share_new(income_per_share):
-    income_per_share_tabel = pd.DataFrame(income_per_share)
-    income_per_share_tabel = income_per_share_tabel['reportedValue']
-    income_per_share_tabel = len(income_per_share_tabel)
-    income_per_share_tabel = income_per_share_tabel -1
     if income_per_share == []:
         income_per_share = [0, 0, 0, 0]
         income_per_share_new = income_per_share[3]
@@ -559,6 +555,10 @@ def income_per_share_new(income_per_share):
         income_per_share_new = income_per_share[3]
     else:
         income_per_share
+        income_per_share_tabel = pd.DataFrame(income_per_share)
+        income_per_share_tabel = income_per_share_tabel['reportedValue']
+        income_per_share_tabel = len(income_per_share_tabel)
+        income_per_share_tabel = income_per_share_tabel -1
         if income_per_share[income_per_share_tabel] == None:
             income_per_share_new = 0
         else:
@@ -566,10 +566,6 @@ def income_per_share_new(income_per_share):
     return income_per_share_new
 
 def income_per_share_old(income_per_share):
-    income_per_share_tabel = pd.DataFrame(income_per_share)
-    income_per_share_tabel = income_per_share_tabel['reportedValue']
-    income_per_share_tabel = len(income_per_share_tabel)
-    income_per_share_tabel = income_per_share_tabel -2
     if income_per_share == []:
         income_per_share = [0, 0, 0, 0]
         income_per_share_old = income_per_share[2]
@@ -581,6 +577,10 @@ def income_per_share_old(income_per_share):
         income_per_share_old = income_per_share[2]
     else:
         income_per_share
+        income_per_share_tabel = pd.DataFrame(income_per_share)
+        income_per_share_tabel = income_per_share_tabel['reportedValue']
+        income_per_share_tabel = len(income_per_share_tabel)
+        income_per_share_tabel = income_per_share_tabel -2
         if income_per_share[income_per_share_tabel] == None:
             income_per_share_old = 0
         else:
@@ -588,10 +588,6 @@ def income_per_share_old(income_per_share):
     return income_per_share_old
 
 def fx_rate_effect_on_cash_new(fx_rate_effect_on_cash):
-    fx_rate_effect_on_cash_tabel = pd.DataFrame(fx_rate_effect_on_cash)
-    fx_rate_effect_on_cash_tabel = fx_rate_effect_on_cash_tabel['reportedValue']
-    fx_rate_effect_on_cash_tabel = len(fx_rate_effect_on_cash_tabel)
-    fx_rate_effect_on_cash_tabel = fx_rate_effect_on_cash_tabel -1
     if fx_rate_effect_on_cash == []:
         fx_rate_effect_on_cash = [0, 0, 0, 0]
         fx_rate_effect_on_cash_new = fx_rate_effect_on_cash[3]
@@ -603,6 +599,10 @@ def fx_rate_effect_on_cash_new(fx_rate_effect_on_cash):
         fx_rate_effect_on_cash_new = fx_rate_effect_on_cash[3]
     else:
         fx_rate_effect_on_cash
+        fx_rate_effect_on_cash_tabel = pd.DataFrame(fx_rate_effect_on_cash)
+        fx_rate_effect_on_cash_tabel = fx_rate_effect_on_cash_tabel['reportedValue']
+        fx_rate_effect_on_cash_tabel = len(fx_rate_effect_on_cash_tabel)
+        fx_rate_effect_on_cash_tabel = fx_rate_effect_on_cash_tabel -1
         if fx_rate_effect_on_cash[fx_rate_effect_on_cash_tabel] == None:
             fx_rate_effect_on_cash_new = 0
         else:
@@ -610,10 +610,6 @@ def fx_rate_effect_on_cash_new(fx_rate_effect_on_cash):
     return fx_rate_effect_on_cash_new
 
 def fx_rate_effect_on_cash_old(fx_rate_effect_on_cash):
-    fx_rate_effect_on_cash_tabel = pd.DataFrame(fx_rate_effect_on_cash)
-    fx_rate_effect_on_cash_tabel = fx_rate_effect_on_cash_tabel['reportedValue']
-    fx_rate_effect_on_cash_tabel = len(fx_rate_effect_on_cash_tabel)
-    fx_rate_effect_on_cash_tabel = fx_rate_effect_on_cash_tabel -2
     if fx_rate_effect_on_cash == []:
         fx_rate_effect_on_cash = [0, 0, 0, 0]
         fx_rate_effect_on_cash_old = fx_rate_effect_on_cash[2]
@@ -625,6 +621,10 @@ def fx_rate_effect_on_cash_old(fx_rate_effect_on_cash):
         fx_rate_effect_on_cash_old = fx_rate_effect_on_cash[2]
     else:
         fx_rate_effect_on_cash
+        fx_rate_effect_on_cash_tabel = pd.DataFrame(fx_rate_effect_on_cash)
+        fx_rate_effect_on_cash_tabel = fx_rate_effect_on_cash_tabel['reportedValue']
+        fx_rate_effect_on_cash_tabel = len(fx_rate_effect_on_cash_tabel)
+        fx_rate_effect_on_cash_tabel = fx_rate_effect_on_cash_tabel -2
         if fx_rate_effect_on_cash[fx_rate_effect_on_cash_tabel] == None:
             fx_rate_effect_on_cash_old = 0
         else:
@@ -751,7 +751,7 @@ income_per_share_old = income_per_share_old(income_per_share)
 tabel_bs_new = pd.DataFrame([[cash_and_equivalents_new, account_receivables_third_party_new, account_receivables_related_party_new, total_current_assets_new, fixed_assets_new, total_non_current_assets_new, total_assets_new, total_current_liabilities_new, total_non_current_liabilities_new, total_equity_new, ticker_kode, year_new]],
             #index=[' '], 
             columns=['cash_and_equivalents', 'account_receivables_third_party', 'account_receivables_related_party', 'total_current_assets', 'fixed_assets', 'total_non_current_assets', 'total_assets', 'total_current_liabilities', 'total_non_current_liabilities', 'total_equity', 'ticker_kode', 'year'])
-print(tabel_bs_new)
+#print(tabel_bs_new)
 
 #print("=======data satu tahun sebelumnya=======")
 
@@ -770,7 +770,7 @@ tabel_cf_new = pd.DataFrame([[operating_cash_flow_new, investing_cash_flow_new, 
 #print("=======data lama=======")
 tabel_cf_old = pd.DataFrame([[operating_cash_flow_old, investing_cash_flow_old, fixed_asset_expenditure_old, financing_cash_flow_old, cash_and_equivalents_beginning_old, fx_rate_effect_on_cash_old, cash_and_equivalents_changes_old, cash_and_equivalents_ending_old, ticker_kode, year_old]],
             #index=[' '], 
-            columns=['operating_cash_flow', 'investing_cash_flow', 'fixed_asset_expenditure', 'financing_cash_flow', 'cash_and_equivalents_beginning', 'fx_rate_effect_on_cash_old', 'cash_and_equivalents_changes', 'cash_and_equivalents_ending', 'ticker_kode', 'year'])
+            columns=['operating_cash_flow', 'investing_cash_flow', 'fixed_asset_expenditure', 'financing_cash_flow', 'cash_and_equivalents_beginning', 'fx_rate_effect_on_cash', 'cash_and_equivalents_changes', 'cash_and_equivalents_ending', 'ticker_kode', 'year'])
 #print(tabel_cf_old)
 
 tabel_is_new = pd.DataFrame([[revenues_new, cost_of_goods_sold_new, gross_income_new, sales_expenses_new, sales_and_admin_expenses_new, depreciation_expenses_new, pretax_income_new, taxes_expenses_new, after_taxes_income_op_new, after_tax_income_nonoperational_new, after_tax_income_new, comprehensive_income_EPS_new, income_per_share_new, ticker_kode, year_new]],
@@ -792,3 +792,89 @@ after_tax_income_new
 account_receivables_third_party
 account_receivables_related_party
 '''
+#========================= start program ================================
+
+file_name_new = tabel_bs_new, tabel_cf_new, tabel_is_new
+file_name_old = tabel_bs_old, tabel_cf_old, tabel_is_old
+
+def get_single_dataframe(year):
+    if year == year_new:
+        file_name_new == 'file_name-{}'.format(year)
+        merge = reduce(partial(pandas.merge, on = ('ticker_kode')), (tabel_bs_new, tabel_cf_new, tabel_is_new))
+    else:
+        year == year_old
+        file_name_old == 'file_name-{}'.format(year)
+        merge = reduce(partial(pandas.merge, on = ('ticker_kode')), (tabel_bs_old, tabel_cf_old, tabel_is_old))
+    return merge
+
+
+def get_multiple_dataframes(year, subtrahend):
+    """
+    Returns multiple periods dataframe into a single dataframe.
+    
+    Arguments:
+        - latest_year = four digits integer to get YYYY format.
+        - subtrahend = a quantity or number to be subtracted from another.
+    """
+    
+    # if subtrahend is 1 then total periods will be 2 years
+    # example: 2018 - 1 = 2017, so it will be between 2017 and 2018
+    # year + 1 is needed because otherwise it only ranges from 2017 to 2017
+    dfs = []
+    for y in range(year - subtrahend, year + 1):
+        dfs.append(get_single_dataframe(year=y))
+        
+    return pandas.concat(dfs, sort = False).reset_index(drop = True)
+
+baseline_dataframe = get_multiple_dataframes(year_new, 1)
+
+def get_free_cash_flow(year):
+    """
+    Returns free cash flow dataframe.
+    
+    Argument:
+        - year = four digits integer to get YYYY format.
+    """
+    
+    # select necessary variables
+    # sort by ticker code in ascending order
+    # reset index
+    nwc = baseline_dataframe[[
+        'year', 
+        'ticker_kode', 
+        'total_current_assets', 
+        'total_current_liabilities'
+    ]].sort_values(by=['ticker_kode'], ascending=True) \
+    .reset_index(drop=True)
+
+    # add net working capital as a column
+    nwc['net_working_capital'] = nwc['total_current_assets'] - nwc['total_current_liabilities']
+    
+    # changes in net working capital
+    nwc['net_working_capital_delta'] = nwc.groupby('ticker_kode')['net_working_capital'].diff()
+
+    # filter dataframe only in year latest year
+    nwc = nwc[nwc['year'] == year][[
+        'ticker_kode', 
+        'net_working_capital_delta'
+    ]].reset_index(drop=True)
+
+    # calculate free cash flow
+    fcff = baseline_dataframe[baseline_dataframe['year'] == year][[
+        'year', 
+        'ticker_kode', 
+        'pretax_income', 
+        'fixed_assets', 
+        'tax_expenses'
+    ]]
+
+    fcff = pandas.merge(fcff, nwc, how = 'inner', on = 'ticker_kode').reset_index(drop = True)
+    
+    fcff['free_cash_flow'] = fcff['pretax_income'] \
+    - fcff['fixed_assets'] \
+    - fcff['net_working_capital_delta'] \
+    - fcff['tax_expenses']
+    
+    return fcff[['year', 'ticker_kode', 'free_cash_flow']].reset_index(drop=True)
+
+print(get_free_cash_flow(year_new))
