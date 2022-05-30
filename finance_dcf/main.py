@@ -2,6 +2,7 @@ from calendar import c
 from codecs import ignore_errors
 from sys import set_coroutine_origin_tracking_depth
 from tokenize import Ignore
+from webbrowser import get
 #from turtle import clear
 from numpy import append
 import pandas as pd
@@ -28,7 +29,15 @@ url_profile = 'https://finance.yahoo.com/quote/{}/profile?p={}'
 url_financials = 'https://finance.yahoo.com/quote/{}/financials?p={}'
 url_cashflow = 'https://finance.yahoo.com/quote/{}/cash-flow?p={}'
 
-ticker_kode = "AALI.JK"
+#ticker_kode = "AALI.JK"
+
+kode = input("masukkan kode saham= ")
+negara = input("masukkan negara= ")
+if negara == "Indonesia":
+    ticker_kode = kode + ".JK"
+else:
+    ticker_kode = kode
+
 #headers = { 'User-Agent' : 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.2 Safari/605.1.15' }
 headers = { 'User-Agent' : 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.4951.64 Safari/537.36' }
 response = requests.get(url_financials.format(ticker_kode, ticker_kode),headers={'user-agent':'my-app'})
@@ -877,4 +886,76 @@ def get_free_cash_flow(year):
     
     return fcff[['year', 'ticker_kode', 'free_cash_flow']].reset_index(drop=True)
 
-print(get_free_cash_flow(year_new))
+fcff = get_free_cash_flow(year_new)
+
+def get_risk_free_rate(negara):
+    url = requests.get('http://www.worldgovernmentbonds.com')
+    soup = BeautifulSoup(url.text, 'html.parser')
+    table = soup.find('table', class_= 'homeBondTable w3-table w3-white table-padding-custom w3-small font-open-sans table-valign-middle')
+
+    headers = []
+    headers2 = []
+
+    for area in table.find_all('tbody'):
+        rows = area.find_all('tr')
+        for row in rows:
+            tabel_n = row.find('td', class_ = 'w3-left-align').text.strip()
+            headers.append(tabel_n)
+            bond_n = row.find('td', class_ = 'w3-right-align w3-bold').text.strip()
+            n = 1
+            bond_n = bond_n[:-n]
+            bond_n = float(bond_n)
+            headers2.append(bond_n)
+        gabung= pd.DataFrame(headers2,
+            index=headers)
+        choice_negara = gabung.loc[negara]
+    return choice_negara / 100
+
+risk_free_rate = get_risk_free_rate(negara)
+
+def get_cost_of_equity(beta, market_rate):
+    
+    
+    return risk_free_rate + beta * (market_rate - risk_free_rate)
+
+cost_of_equity = get_cost_of_equity(0.05, 0.05)
+
+def get_wacc(year_new, tax_rate=0.25):
+
+    # get capital structure
+    wacc = baseline_dataframe[baseline_dataframe['year'] == year_new][[
+        'ticker_kode', 
+        'total_assets', 
+        'total_equity'
+    ]].reset_index(drop = True)
+    
+    wacc['equity_proportion'] = wacc['total_equity'] / wacc['total_assets']
+    wacc['liabilities_proportion'] = 1 - wacc['equity_proportion']
+    
+    # cost of equity
+    re = cost_of_equity
+    
+    # cost of debt
+    rd = 1 - tax_rate
+    
+    # weighted cost of capital
+    wacc['wacc'] = (re * wacc['equity_proportion']) + (rd * (1 - wacc['equity_proportion']))
+    wacc = wacc[['ticker_kode', 'wacc']]
+    
+    return wacc
+
+wacc = get_wacc(year_new, 0.05)
+fcff = pandas.merge(fcff, wacc, how = 'inner', on = 'ticker_kode')
+
+def get_fair_value(growth_rate, total_period, year):
+
+    fcff['fpycf'] = fcff['free_cash_flow'] * (1 + (growth_rate * total_period))
+    fcff['terminal_value'] = (fcff['fpycf'] * (1 + growth_rate)) / (fcff['wacc'] - growth_rate)
+    fcff['enterprise_value'] = fcff['free_cash_flow'] / ((1 + growth_rate) ** total_period)
+    fcff['fair_value'] = fcff['terminal_value'] - fcff['enterprise_value']
+    
+    return fcff[['year', 'ticker_kode', 'fair_value']]
+
+final_dataframe = get_fair_value(0.0001, 1, year_new)
+
+print(final_dataframe)
