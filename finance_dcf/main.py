@@ -58,7 +58,7 @@ start_cashflow = script_data_cashflow.find("context")-2
 
 # slice the json string
 json_data = json.loads(script_data[start:-12])
-json_data_cashflow = json.loads(script_data_cashflow[start:-12])
+json_data_cashflow = json.loads(script_data_cashflow[start_cashflow:-12])
 
 Selling_Marketing_Expense = json_data['context']['dispatcher']['stores']['QuoteTimeSeriesStore']['timeSeries']['annualSellingAndMarketingExpense']
 depreciation_expenses = json_data['context']['dispatcher']['stores']['QuoteSummaryStore']['incomeStatementHistory']['incomeStatementHistory']
