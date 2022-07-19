@@ -1,33 +1,28 @@
-from calendar import c
-from codecs import ignore_errors
-from lib2to3.pgen2.pgen import DFAState
-from secrets import choice
-from sys import set_coroutine_origin_tracking_depth
-from tokenize import Ignore
-from turtle import clear
-from webbrowser import get
-#from turtle import clear
-from numpy import append
-import pandas as pd
-import pandas
-from pyrsistent import b
-import yfinance as yf
-import datetime
-import os
-import string
-from bs4 import BeautifulSoup
-from functools import partial, reduce
-import plotly.graph_objects as go
+a = 15613000000 #shortTermDebt
+b = 109106000000 #longTermDebt
+c = 0 #capitalLeaseObligations
+d = 63090000000 #totalEquity
 
-#=======
-import re
-import json
-import csv
-from io import StringIO
-import requests
+e = (a-b)+c
+
+
+
+annualLongTermDebt = 17296000000
+annualPayablesAndAccruedExpenses = 12351000000
+annualCurrentAccruedExpenses = 6442000000
+
+a = annualLongTermDebt + annualPayablesAndAccruedExpenses +annualCurrentAccruedExpenses +26067000000
 
 
 
 
+totalStockholdersEquity = 63090000000
+totalLiabilitiesAndStockholdersEquity =351002000000
+totalEquity = 63090000000
+totalLiabilitiesAndTotalEquity = 351002000000
+totalInvestments = 155576000000
 
 
+
+ss = 351002000000 - 155576000000 - 89779000000
+print(ss)
